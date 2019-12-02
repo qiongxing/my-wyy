@@ -13,12 +13,32 @@ export class HomeComponent implements OnInit {
   carouselIndex = 0;
   @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
   constructor(private homeSer: HomeService) {
+    this.getBanners();
+    this.getHotTags();
+    this.getPerosonalSheetList();
+  }
+
+  ngOnInit() {
+  }
+  //获取轮播图数据
+  getBanners() {
     this.homeSer.getBanners().subscribe(banners => {
       this.banners = banners;
     });
   }
-
-  ngOnInit() {
+  //获取热门标签
+  getHotTags() {
+    this.homeSer.getHotTags().subscribe(hotTags => {
+      // this.banners = banners;
+      console.log('热门标签',hotTags)
+    });
+  }
+  //获取推荐歌单
+  getPerosonalSheetList() {
+    this.homeSer.getPerosonalSheetList().subscribe(perosonal => {
+      // this.banners = banners;
+      console.log('推荐歌单',perosonal)
+    });
   }
   onBeforeChange({ to }) {
     this.carouselIndex = to;
