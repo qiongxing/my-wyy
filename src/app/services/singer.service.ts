@@ -21,7 +21,6 @@ const defaultParams: SingerParams = {
   providedIn: 'root'
 })
 export class SingerService {
-
   constructor(private http: HttpClient, @Inject(API_CONFIG) private url: string) { }
 
   getEnterSinger(args: SingerParams = defaultParams): Observable<Singer[]> {

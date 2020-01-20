@@ -3,6 +3,8 @@ import { HomeService } from 'src/app/services/home.service';
 import { Banner, HotTag, SongSheet, Singer } from 'src/app/types/common.model';
 import { NzCarouselComponent } from 'ng-zorro-antd';
 import { SingerService } from 'src/app/services/singer.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs/internal/operators';
 
 @Component({
   selector: 'app-home',
@@ -16,41 +18,16 @@ export class HomeComponent implements OnInit {
   singers: Singer[];
   carouselIndex = 0;
   @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
-  constructor(private homeSer: HomeService, private singerService: SingerService) {
-    this.getBanners();
-    this.getHotTags();
-    this.getPerosonalSheetList();
-    this.getEnterSinger();
+  constructor(private homeSer: HomeService, private singerService: SingerService, private router: ActivatedRoute) {
+    this.router.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, perosonal, singers]) => {
+      this.banners = banners;
+      this.hotTags = hotTags;
+      this.songSheetList = perosonal;
+      this.singers = singers;
+    });
   }
 
   ngOnInit() {
-  }
-  //获取轮播图数据
-  getBanners() {
-    this.homeSer.getBanners().subscribe(banners => {
-      this.banners = banners;
-    });
-  }
-  //获取热门标签
-  getHotTags() {
-    this.homeSer.getHotTags().subscribe(hotTags => {
-      this.hotTags = hotTags;
-      console.log('热门标签', hotTags)
-    });
-  }
-  //获取推荐歌单
-  getPerosonalSheetList() {
-    this.homeSer.getPerosonalSheetList().subscribe(perosonal => {
-      this.songSheetList = perosonal;
-      console.log('推荐歌单', perosonal)
-    });
-  }
-  //获取歌手推荐
-  getEnterSinger() {
-    this.singerService.getEnterSinger().subscribe(singers => {
-      this.singers = singers;
-      console.log('推荐歌单', singers)
-    });
   }
   onBeforeChange({ to }) {
     this.carouselIndex = to;
