@@ -34,6 +34,7 @@ export type SongSheetDetail = {
 export type Song = {
     id: number;
     name: string;
-    ar: Singer[];
-    al: { id: number; name: string; picUrl: string }
+    ar: Singer[];//歌手
+    al: { id: number; name: string; picUrl: string }//
+    dt: string;
 }
