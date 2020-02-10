@@ -38,3 +38,8 @@ export type Song = {
     al: { id: number; name: string; picUrl: string }//
     dt: string;
 }
+//歌曲地址
+export type SongUrl = {
+    id: number;
+    url: string;
+}
