@@ -17,3 +17,4 @@ export type WySliderMouseObserver = {
     end$?: Observable<Event>;
 
 }
+export type SliderValue = number | null;
