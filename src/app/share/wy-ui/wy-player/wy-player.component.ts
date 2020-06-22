@@ -6,7 +6,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
   styleUrls: ['./wy-player.component.less'],
 })
 export class WyPlayerComponent implements OnInit {
-
+  wySliderValue = 35;
   constructor() { }
 
   ngOnInit() {
