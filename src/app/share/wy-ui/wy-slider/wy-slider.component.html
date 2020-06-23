@@ -1,4 +1,5 @@
-<div class="wy-slider" #wySlider>
+<div class="wy-slider" #wySlider [class.wy-slider-vertical]='wyVertical'>
+  <wy-slider-track [wyVertical]='wyVertical' [wyLength]='bufferOffset' [wyBuffer]='true'></wy-slider-track>
   <wy-slider-track [wyVertical]='wyVertical' [wyLength]='offset'></wy-slider-track>
   <wy-slider-handle [wyVertical]='wyVertical' [wyOffset]='offset'></wy-slider-handle>
 </div>

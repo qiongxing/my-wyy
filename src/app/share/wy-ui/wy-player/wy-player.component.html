@@ -29,7 +29,7 @@
           </ul>
         </div>
         <div class="bar">
-          <wy-slider [(ngModel)]="wySliderValue"></wy-slider>
+          <wy-slider [(ngModel)]="wySliderValue" [bufferOffset]='bufferOffset'></wy-slider>
           <span class="time"><em>02:21</em> / 04:45</span>
         </div>
       </div>
@@ -44,7 +44,10 @@
         <p class="open">
           <span></span>
         </p>
+        <div class="control-vol">
+          <wy-slider [wyVertical]='true'></wy-slider>
+        </div>
       </div>
     </div>
-  </div>
+  </div> 
 </div>

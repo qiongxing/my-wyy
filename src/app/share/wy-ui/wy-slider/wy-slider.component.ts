@@ -26,6 +26,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
   @Input() wyVertical = false;
   @Input() wyMax = 100;
   @Input() wyMin = 0;
+  @Input() bufferOffset: SliderValue = 0;
   @ViewChild('wySlider', { static: true }) private wySlider: ElementRef;
 
   private dragStart$: Observable<number>;
@@ -37,6 +38,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
   private isDraging = false;
   value: SliderValue = null;
   offset: SliderValue = null;
+
   constructor(
     @Inject(DOCUMENT) private doc: Document,
     private cdr: ChangeDetectorRef,

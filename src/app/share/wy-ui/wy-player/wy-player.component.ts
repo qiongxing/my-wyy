@@ -7,6 +7,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class WyPlayerComponent implements OnInit {
   wySliderValue = 35;
+  bufferOffset = 70;
   constructor() { }
 
   ngOnInit() {
