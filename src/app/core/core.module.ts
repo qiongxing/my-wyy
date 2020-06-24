@@ -7,6 +7,7 @@ import { ServicesModule } from '../services/services.module';
 import { PagesModule } from '../pages/pages.module';
 import { AppRoutingModule } from '../app-routing.module';
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd';
+import { AppStoreModule } from '../store';
 
 @NgModule({
   declarations: [],
@@ -17,15 +18,16 @@ import { NZ_I18N, zh_CN } from 'ng-zorro-antd';
     BrowserAnimationsModule,
     ServicesModule,
     PagesModule,
+    AppStoreModule,
     AppRoutingModule,
   ],
-  exports:[ShareModule,AppRoutingModule],
+  exports: [ShareModule, AppRoutingModule],
   providers: [{ provide: NZ_I18N, useValue: zh_CN }],
 })
 export class CoreModule {
-  constructor(@SkipSelf() @Optional() parentModule:CoreModule){
-    if(parentModule){
+  constructor(@SkipSelf() @Optional() parentModule: CoreModule) {
+    if (parentModule) {
       throw new Error('core module 只供appModule使用')
     }
   }
- }
+}

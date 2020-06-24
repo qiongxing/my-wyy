@@ -18,7 +18,7 @@ registerLocaleData(zh);
     AppComponent
   ],
   imports: [
-    CoreModule,
+    CoreModule
   ],
  
   bootstrap: [AppComponent]
