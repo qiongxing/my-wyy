@@ -6,6 +6,9 @@ import { SingerService } from 'src/app/services/singer.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/internal/operators';
 import { SheetService } from 'src/app/services/sheet.service';
+import { Store } from '@ngrx/store';
+import { AppStoreModule } from 'src/app/store';
+import { setPlayList, setSongList, setCurrentIndex } from 'src/app/store/actions/player.action';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +24,8 @@ export class HomeComponent implements OnInit {
   @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
   constructor(
     private router: ActivatedRoute,
-    private sheetService: SheetService
+    private sheetService: SheetService,
+    private store$: Store<AppStoreModule>,
   ) {
     this.router.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, perosonal, singers]) => {
       this.banners = banners;
@@ -41,8 +45,11 @@ export class HomeComponent implements OnInit {
   }
   onPlaySheet(id: number) {
     console.log(id);
-    this.sheetService.playSheet(id).subscribe(res => {
-      console.log('歌单详情', res);
+    this.sheetService.playSheet(id).subscribe(list => {
+      console.log('歌单详情', list);
+      this.store$.dispatch(setSongList({ songList: list }));
+      this.store$.dispatch(setPlayList({ playList: list }));
+      this.store$.dispatch(setCurrentIndex({ currentIndex: 0 }));
     });
   }
 }
