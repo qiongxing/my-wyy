@@ -13,24 +13,24 @@
         <i class="next"></i>
       </div>
       <div class="head">
-        <img src="https://p1.music.126.net/AgJPVd9Ng489G-G_sY9JRw==/109951164605789897.jpg" alt="">
+        <img [src]="picUrl" alt="">
         <i class="mask"></i>
       </div>
       <div class="play">
-        <div class="words clearfix hide">
-          <p class="ellipsis">歌名</p>
+        <div class="words clearfix">
+          <p class="ellipsis">{{currentSong?.name}}</p>
           <ul class="songs clearfix">
-            <li>
-              <a>歌名1</a>/
-            </li>
-            <li>
-              <a>歌名2</a>
+            <li *ngFor="let item of currentSong?.ar;last as isLast">
+              <a>{{item.name}}</a>
+              <span [hidden]="isLast">/</span>
             </li>
           </ul>
         </div>
         <div class="bar">
-          <wy-slider [(ngModel)]="wySliderValue" [bufferOffset]='bufferOffset'></wy-slider>
-          <span class="time"><em>02:21</em> / 04:45</span>
+          <div class="slider-wrap">
+            <wy-slider [(ngModel)]="wySliderValue" [bufferOffset]='bufferOffset'></wy-slider>
+          </div>
+          <span class="time"><em>{{currentTime|formatTime}}</em> / {{duration|formatTime}}</span>
         </div>
       </div>
 
@@ -50,5 +50,5 @@
       </div>
     </div>
   </div>
-  <audio #audioEl [src]='currentSong?.url' (canplay)='onCanplay()'></audio>
+  <audio #audioEl [src]='currentSong?.url' (canplay)='onCanplay()' (timeupdate)='onTimeUpdate($event)'></audio>
 </div>

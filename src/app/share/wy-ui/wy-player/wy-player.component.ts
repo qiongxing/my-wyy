@@ -18,6 +18,8 @@ export class WyPlayerComponent implements OnInit {
   playList: Song[];
   currentIndex: number;
   currentSong: Song;
+  duration: number;//歌曲时长
+  currentTime: number;//播放时间
   @ViewChild('audioEl', { static: true }) private audioEl: ElementRef;
   audio: HTMLAudioElement;
   constructor(
@@ -39,7 +41,10 @@ export class WyPlayerComponent implements OnInit {
   }
   watchCurrentSong(song: Song): void {
     console.log('播放歌曲', song)
-    this.currentSong = song;
+    if (song) {
+      this.currentSong = song;
+      this.duration = song.dt / 1000;
+    }
   }
   watchPlayMode(mode: PlayMode): void {
     console.log('播放模式', mode)
@@ -54,5 +59,11 @@ export class WyPlayerComponent implements OnInit {
   }
   onCanplay() {
     this.audio.play();
+  }
+  get picUrl(): string {
+    return this.currentSong ? this.currentSong.al.picUrl : 'https://p1.music.126.net/AgJPVd9Ng489G-G_sY9JRw==/109951164605789897.jpg';
+  }
+  onTimeUpdate(e: Event) {
+    this.currentTime = (<HTMLAudioElement>e.target).currentTime;
   }
 }
