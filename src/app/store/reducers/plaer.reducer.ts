@@ -24,10 +24,10 @@ const initPlayerState: PlayerState = {
     currentIndex: -1
 }
 
-export const playerReducer = createReducer(initPlayerState, (
+export const playerReducer = createReducer(initPlayerState,
     on(setPlaying, (state, { playing }) => ({ ...state, playing })),
     on(setPlayMode, (state, { playMode }) => ({ ...state, playMode })),
     on(setSongList, (state, { songList }) => ({ ...state, songList })),
     on(setPlayList, (state, { playList }) => ({ ...state, playList })),
     on(setCurrentIndex, (state, { currentIndex }) => ({ ...state, currentIndex }))
-))
+)

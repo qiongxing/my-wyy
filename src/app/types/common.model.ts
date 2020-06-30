@@ -37,6 +37,7 @@ export type Song = {
     ar: Singer[];//歌手
     al: { id: number; name: string; picUrl: string }//
     dt: string;
+    url: string;
 }
 //歌曲地址
 export type SongUrl = {
