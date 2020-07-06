@@ -5,6 +5,7 @@ import { selectSongList, selectPlayList, selectCurrentIndex, selectPlayMode, sel
 import { setPlayList, setCurrentIndex } from 'src/app/store/actions/player.action';
 import { Song } from 'src/app/types/common.model';
 import { PlayMode } from './wy-player.model';
+import { TimeHolder } from 'ng-zorro-antd/time-picker/time-holder';
 
 @Component({
   selector: 'app-wy-player',
@@ -22,6 +23,8 @@ export class WyPlayerComponent implements OnInit {
   currentTime: number;//播放时间
   @ViewChild('audioEl', { static: true }) private audioEl: ElementRef;
   audio: HTMLAudioElement;
+  playing: boolean = false;
+  songReady: boolean = false;
   constructor(
     private store$: Store<AppStoreModule>
   ) {
@@ -58,12 +61,47 @@ export class WyPlayerComponent implements OnInit {
     this.currentIndex = index;
   }
   onCanplay() {
+    this.songReady = true;
     this.audio.play();
+    this.playing = true;
   }
   get picUrl(): string {
     return this.currentSong ? this.currentSong.al.picUrl : 'https://p1.music.126.net/AgJPVd9Ng489G-G_sY9JRw==/109951164605789897.jpg';
   }
   onTimeUpdate(e: Event) {
     this.currentTime = (<HTMLAudioElement>e.target).currentTime;
+  }
+  //播放/暂停
+  onToggle() {
+    if (!this.currentSong) {
+      if (this.playList.length > 0) {
+        this.store$.dispatch(setCurrentIndex({ currentIndex: 0 }));
+        this.songReady = false;
+      }
+    } else {
+      if (this.songReady) {
+        this.playing = !this.playing;
+        if (this.playing) {
+          this.audio.play();
+        } else {
+          this.audio.pause();
+        }
+      }
+    }
+  }
+  onPrev(index: number) {
+    if (!this.songReady) return;
+    const newIndex = index <= 0 ? this.songList.length - 1 : index;
+    this.updateIndex(newIndex);
+  }
+  onNext(index: number) {
+    if (!this.songReady) return;
+    const newIndex = index >= this.songList.length - 1 ? 0 : index;
+    this.updateIndex(newIndex);
+  }
+
+  private updateIndex(newIndex: number) {
+    this.store$.dispatch(setCurrentIndex({ currentIndex: newIndex }));
+    this.songReady = false;
   }
 }
