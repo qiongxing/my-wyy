@@ -1,4 +1,4 @@
-<div class="m-player">
+<div class="m-player" (click)="selfClick=true">
   <div class="lock">
     <div class="left">
       <i></i>
@@ -28,7 +28,8 @@
         </div>
         <div class="bar">
           <div class="slider-wrap">
-            <wy-slider [(ngModel)]="wySliderValue" [bufferOffset]='bufferOffset'></wy-slider>
+            <wy-slider [(ngModel)]="persent" [bufferOffset]='bufferPersent' (wyOnAfterChange)='onPersentChange($event)'>
+            </wy-slider>
           </div>
           <span class="time"><em>{{currentTime|formatTime}}</em> / {{duration|formatTime}}</span>
         </div>
@@ -39,13 +40,13 @@
         <i class="share" title="分享"></i>
       </div>
       <div class="ctrl">
-        <i class="volume" title="音量"></i>
+        <i class="volume" title="音量" (click)='togglePanel($event)'></i>
         <i class="loop" title="循环"></i>
         <p class="open">
           <span></span>
         </p>
-        <div class="control-vol">
-          <wy-slider [wyVertical]='true'></wy-slider>
+        <div class="control-vol" [hidden]='!showVolumePanel'>
+          <wy-slider [wyVertical]='true' [(ngModel)]="volume" (ngModelChange)='onVolumeChange($event)'></wy-slider>
         </div>
       </div>
     </div>
