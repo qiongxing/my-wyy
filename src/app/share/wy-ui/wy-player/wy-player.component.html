@@ -18,8 +18,8 @@
       </div>
       <div class="play">
         <div class="words clearfix">
-          <p class="ellipsis">{{currentSong?.name}}</p>
-          <ul class="songs clearfix">
+          <p class="ellipsis margin-bottom-none">{{currentSong?.name}}</p>
+          <ul class="songs clearfix margin-bottom-none">
             <li *ngFor="let item of currentSong?.ar;last as isLast">
               <a>{{item.name}}</a>
               <span [hidden]="isLast">/</span>
@@ -40,16 +40,20 @@
         <i class="share" title="分享"></i>
       </div>
       <div class="ctrl">
-        <i class="volume" title="音量" (click)='togglePanel($event)'></i>
-        <i class="loop" title="循环"></i>
-        <p class="open">
+        <i class="volume" title="音量" (click)='toggleVolPanel()'></i>
+        <i [ngClass]='currentMode.type' [title]='currentMode.label' (click)='onChangeMode()'></i>
+        <p class="open" (click)="toggleListPanel()">
           <span></span>
         </p>
         <div class="control-vol" [hidden]='!showVolumePanel'>
           <wy-slider [wyVertical]='true' [(ngModel)]="volume" (ngModelChange)='onVolumeChange($event)'></wy-slider>
         </div>
       </div>
+      <app-wy-player-panel [songList]='songList' [currentSong]='currentSong' [currentIndex]='currentIndex'
+        [show]='showPanel' (onClose)='showPanel=false' (onChangeSong)='onChangeSong($event)'>
+      </app-wy-player-panel>
     </div>
   </div>
-  <audio #audioEl [src]='currentSong?.url' (canplay)='onCanplay()' (timeupdate)='onTimeUpdate($event)'></audio>
+  <audio #audioEl [src]='currentSong?.url' (canplay)='onCanplay()' (timeupdate)='onTimeUpdate($event)'
+    (ended)='onEnded()'></audio>
 </div>
