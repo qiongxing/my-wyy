@@ -6,9 +6,12 @@ import { SingerService } from 'src/app/services/singer.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/internal/operators';
 import { SheetService } from 'src/app/services/sheet.service';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from 'src/app/store';
 import { setPlayList, setSongList, setCurrentIndex } from 'src/app/store/actions/player.action';
+import { PlayerState } from 'src/app/store/reducers/plaer.reducer';
+import { getPlayer } from 'src/app/store/selectors/player.selector';
+import { shuffle, findIndex } from 'src/app/utils/array';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +24,7 @@ export class HomeComponent implements OnInit {
   songSheetList: SongSheet[];
   singers: Singer[];
   carouselIndex = 0;
+  playState: PlayerState;
   @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
   constructor(
     private router: ActivatedRoute,
@@ -33,6 +37,9 @@ export class HomeComponent implements OnInit {
       this.songSheetList = perosonal;
       this.singers = singers;
     });
+    this.store$.pipe(select(getPlayer)).subscribe(res => {
+      this.playState = res
+    })
   }
 
   ngOnInit() {
@@ -47,8 +54,15 @@ export class HomeComponent implements OnInit {
     console.log(id);
     this.sheetService.playSheet(id).subscribe(list => {
       this.store$.dispatch(setSongList({ songList: list }));
-      this.store$.dispatch(setPlayList({ playList: list }));
-      this.store$.dispatch(setCurrentIndex({ currentIndex: 0 }));
+      let trueList = list.slice();
+      let trueIndex = 0;
+      //随机模式时更改songList
+      if (this.playState.playMode.type === 'random') {
+        trueList = shuffle(trueList || []);
+        trueIndex = findIndex(trueList, list[trueIndex])
+      }
+      this.store$.dispatch(setPlayList({ playList: trueList }));
+      this.store$.dispatch(setCurrentIndex({ currentIndex: trueIndex }));
     });
   }
 }

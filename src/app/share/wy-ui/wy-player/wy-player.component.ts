@@ -9,7 +9,7 @@ import { TimeHolder } from 'ng-zorro-antd/time-picker/time-holder';
 import { SliderValue } from 'ng-zorro-antd';
 import { Subscription, fromEvent } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
-import { shuffle } from 'src/app/utils/array';
+import { shuffle, findIndex } from 'src/app/utils/array';
 
 // type: 'loop' | 'random' | 'singleLoop',
 // label: '循环' | '随机' | '单曲循环',
@@ -91,7 +91,7 @@ export class WyPlayerComponent implements OnInit {
   }
   /**更新当前歌曲 */
   private updateCurrentIndex(list: Song[], currentSong: Song) {
-    const index = list.findIndex(tmp => tmp.id === currentSong.id);
+    const index = findIndex(list, currentSong);
     this.store$.dispatch(setCurrentIndex({ currentIndex: index }));
   }
   private watchList(list, type) {
