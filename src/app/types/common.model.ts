@@ -44,3 +44,9 @@ export type SongUrl = {
     id: number;
     url: string;
 }
+//歌曲地址
+export type Lyrics = {
+    lyric: string;//本身歌词
+    // klyric: string;//韩文翻译歌词
+    tlyric: string;//中文翻译歌词
+}

@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { API_CONFIG } from './services.module';
 import { Observable, of } from 'rxjs';
-import { Singer, SongUrl, Song } from '../types/common.model';
+import { Singer, SongUrl, Song, Lyrics } from '../types/common.model';
 import queryString from 'query-string';
 import { map } from 'rxjs/internal/operators';
 
@@ -42,5 +42,18 @@ export class SongService {
       }
     });
     return result;
+  }
+  /**获取歌词
+   * @param id 歌曲id
+   */
+  getLyrics(id: number): Observable<Lyrics> {
+    const params = new HttpParams().set('id', id.toString());
+    const lyricsUrl = this.url + 'lyric';
+    return this.http.get(lyricsUrl, { params }).pipe(map((res: { [key: string]: { lyric: string } }) => {
+      return {
+        lyric: res.lrc.lyric,
+        tlyric: res.tlyric.lyric
+      }
+    }))
   }
 }
