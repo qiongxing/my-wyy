@@ -17,10 +17,10 @@ BScroll.use(ScrollBar);
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WyScrollComponent implements OnInit, AfterViewInit, OnChanges {
-  private bs: BScroll;
   @ViewChild('wrap', { static: true }) private wrapRef: ElementRef;
   @Input() data: any[];
   @Output() onScrollEnd = new EventEmitter<number>();
+  private bs: BScroll;
   refreshDelay = 50;
   constructor(readonly el: ElementRef) { }
 
