@@ -1,5 +1,5 @@
 import { Lyrics } from 'src/app/types/common.model';
-import { zip, from } from 'rxjs';
+import { zip, from, Subject } from 'rxjs';
 import { skip } from 'rxjs/internal/operators';
 
 export interface BaseLyricLine {
@@ -9,12 +9,21 @@ export interface BaseLyricLine {
 interface LyricLine extends BaseLyricLine {
     time: number;
 }
+interface Handler extends BaseLyricLine {
+    lineNum: number;
+}
 // [00:13.791]
 const timeExp = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
 
 export class WyLyric {
     private lrc: Lyrics;
+    private playing = false;
+    private curNum: number;
+    private startStamp: number;
+    private pauseStamp: number;
+    private timer: any;
     lines: LyricLine[] = [];
+    handler = new Subject<Handler>();
     constructor(lrc: Lyrics) {
         console.log(lrc)
         this.lrc = lrc;
@@ -70,5 +79,57 @@ export class WyLyric {
             const time = Number(result[1]) * 60 * 1000 + Number(result[2]) * 1000 + _thirdResult;
             this.lines.push({ txt: txt, txtCh: txtCh, time: time });
         }
+    }
+
+    play(startTime = 0) {
+        if (!this.lines.length) return;
+        if (!this.playing) {
+            this.playing = true;
+        }
+        this.curNum = this.findCurNum(startTime);
+        /**当前播放时间 */
+        this.startStamp = Date.now() - startTime;
+        if (this.curNum < this.lines.length) {
+            clearTimeout(this.timer);
+            this.playReset();
+        }
+    }
+    private playReset() {
+        const line = this.lines[this.curNum];
+        //歌词时间-经过时间=延迟
+        const delay = line.time - (Date.now() - this.startStamp);
+        this.timer = setTimeout(() => {
+            this.callHandler(this.curNum++);
+            console.log(this.curNum)
+            if (this.playing && this.curNum < this.lines.length - 1) {
+                this.playReset();
+            }
+        }, delay)
+    }
+    private callHandler(i: number) {
+        this.handler.next({
+            txt: this.lines[i].txt,
+            txtCh: this.lines[i].txtCh,
+            lineNum: i
+        })
+    }
+    private findCurNum(time): number {
+        const index = this.lines.findIndex(line => line.time >= time);
+        return index !== -1 ? index : this.lines.length - 1;
+    }
+    togglePlay(playing) {
+        const now = Date.now();
+        this.playing = playing;
+        if (this.playing) {
+            const startTime = (this.pauseStamp || now) - (this.startStamp || now);
+            this.play(startTime);
+        } else {
+            this.stop();
+            this.pauseStamp = now;
+        }
+    }
+    private stop() {
+        this.playing = false;
+        clearTimeout(this.timer);
     }
 }

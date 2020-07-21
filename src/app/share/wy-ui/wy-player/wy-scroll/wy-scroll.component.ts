@@ -53,4 +53,11 @@ export class WyScrollComponent implements OnInit, AfterViewInit, OnChanges {
   scrollToElement(...args) {
     this.bs.scrollToElement.apply(this.bs, args);
   }
+  // 滚动到指定的位置
+  scrollTo(...args) {
+    this.bs.scrollTo.apply(this.bs, args);
+  }
+  togglePlay() {
+
+  }
 }

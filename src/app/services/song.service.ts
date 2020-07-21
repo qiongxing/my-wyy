@@ -50,9 +50,16 @@ export class SongService {
     const params = new HttpParams().set('id', id.toString());
     const lyricsUrl = this.url + 'lyric';
     return this.http.get(lyricsUrl, { params }).pipe(map((res: { [key: string]: { lyric: string } }) => {
-      return {
-        lyric: res.lrc.lyric,
-        tlyric: res.tlyric.lyric
+      if (res.nolyric) {
+        return {
+          lyric: '[00:00.000]本歌曲暂无歌词',
+          tlyric: ''
+        }
+      } else {
+        return {
+          lyric: res.lrc.lyric,
+          tlyric: res.tlyric.lyric
+        }
       }
     }))
   }

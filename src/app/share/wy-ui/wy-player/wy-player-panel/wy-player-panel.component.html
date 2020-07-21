@@ -41,7 +41,9 @@
     </app-wy-scroll>
     <app-wy-scroll class='list-lyric'>
       <ul>
-        <li *ngFor='let line of currentLyric'>{{line.txt}}<br />{{line.txtCh}}</li>
+        <li *ngFor='let line of currentLyric;index as i' [class.current]='currentLineNum===i'>
+          {{line.txt}}<br />{{line.txtCh}}
+        </li>
         <!-- <li>中文歌词<br />英文歌词</li>
         <li>中文歌词<br />英文歌词</li>
         <li>中文歌词<br />英文歌词</li> -->
