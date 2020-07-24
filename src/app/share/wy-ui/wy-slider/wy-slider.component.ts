@@ -21,8 +21,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   }]
 })
 export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccessor {
-
-  private sliderDom: HTMLDivElement;
   @Input() wyVertical = false;
   @Input() wyMax = 100;
   @Input() wyMin = 0;
@@ -30,6 +28,7 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
   @Output() wyOnAfterChange = new EventEmitter<SliderValue>();
   @ViewChild('wySlider', { static: true }) private wySlider: ElementRef;
 
+  private sliderDom: HTMLDivElement;
   private dragStart$: Observable<number>;
   private dragMove$: Observable<number>;
   private dragEnd$: Observable<Event>;
