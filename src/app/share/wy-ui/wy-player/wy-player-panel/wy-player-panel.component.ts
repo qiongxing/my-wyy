@@ -65,7 +65,13 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
       this.wyScroll.first.refreshScroll();
       this.wyScroll.last.refreshScroll();
       if (this.currentSong) {
-        timer(80).subscribe(() => { this.scrollToCurrent(0); })
+        timer(80).subscribe(() => {
+          this.scrollToCurrent(0);
+          if (this.lyricRefs) {
+            this.scrollToCurrentLyric(0);
+          }
+        });
+
       }
     }
   }

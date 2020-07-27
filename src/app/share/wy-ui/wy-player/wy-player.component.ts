@@ -51,11 +51,10 @@ export class WyPlayerComponent implements OnInit {
   songReady: boolean = false;
   showVolumePanel: boolean = false;//是否展示音量控件
   showPanel = false;// 是否显示列表面板
-  selfClick: boolean = false;//默认点击部分不是音量控制面板
+
+  bindFlag: boolean = false;//默认点击部分不是音量控制面板
   currentMode: PlayMode;//播放模式
   modeCount = 0;//当前播放模式索引
-
-  winClick: Subscription;
   constructor(
     private store$: Store<AppStoreModule>,
     @Inject(DOCUMENT) private doc: Document,
@@ -150,7 +149,11 @@ export class WyPlayerComponent implements OnInit {
     const newIndex = index > this.songList.length - 1 ? 0 : index;
     this.updateIndex(newIndex);
   }
-
+  onClickOutSide() {
+    this.showVolumePanel = false;
+    this.showPanel = false;
+    this.bindFlag = false;
+  }
   private updateIndex(newIndex: number) {
     this.store$.dispatch(setCurrentIndex({ currentIndex: newIndex }));
     this.songReady = false;
@@ -179,30 +182,10 @@ export class WyPlayerComponent implements OnInit {
   }
   togglePanel(type: string) {
     this[type] = !this[type];
-    if (this[type]) {
-      this.bindDocumentClickLister();
-    } else {
-      this.unbindDocumentClickLister();
-    }
+    this.bindFlag = (this.showVolumePanel || this.showPanel)
   }
   onListPanelClose() {
     this.toggleListPanel();
-  }
-  private bindDocumentClickLister() {
-    if (!this.winClick) {
-      this.winClick = fromEvent(this.doc, 'click').subscribe(() => {
-        if (!this.selfClick) {//点击了控制器外的地方
-          this.showVolumePanel = false;
-          this.showPanel = false;
-          this.unbindDocumentClickLister();
-        }
-        this.selfClick = false;
-      })
-    }
-  }
-  private unbindDocumentClickLister() {
-    this.winClick.unsubscribe();
-    this.winClick = null;
   }
   //模式变更
   onChangeMode() {
