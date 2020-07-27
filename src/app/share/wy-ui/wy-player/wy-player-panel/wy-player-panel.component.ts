@@ -20,12 +20,13 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
   @Output() onClose = new EventEmitter<void>();
   @Output() onChangeSong = new EventEmitter<Song>();
   @ViewChildren(WyScrollComponent) private wyScroll: QueryList<WyScrollComponent>;
+  private lyric: WyLyric;
+  private lyricRefs: NodeList;
+  private startLine = 2;
   currentIndex: number;
   currentLineNum: number;
   scrollY: number = 0;
   currentLyric: BaseLyricLine[];
-
-  lyric: WyLyric;
   constructor(
     private songSer: SongService
   ) { }
@@ -55,7 +56,7 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
           // this.scrollToCurrent(0);
         }
       } else {
-
+        this.resetLyric();
       }
     }
     if (changes['show'] && !changes['show'].firstChange && this.show) {
@@ -67,20 +68,45 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
     }
   }
   private updateLyrics() {
+    console.log("更新歌词")
+    this.resetLyric();
     this.songSer.getLyrics(this.currentSong.id).subscribe(res => {
+      console.log('test')
       this.lyric = new WyLyric(res);
       this.currentLyric = this.lyric.lines;
-      this.handlerLyric()
-      this.wyScroll.last.scrollTo(0, 0)
-      // if (this.playing) {
-      //   this.lyric.play();
-      // }
+      this.startLine = res.tlyric ? 1 : 3;
+      this.handlerLyric();
+      this.wyScroll.last.scrollTo(0, 0);
+
+      if (this.playing) {
+        this.lyric.play();
+      }
     })
+  }
+  private resetLyric() {
+    if (this.lyric) {
+      this.lyric.stop();
+      this.lyric = null;
+      this.currentLyric = [];
+      this.currentLineNum = 0;
+      this.lyricRefs = null;
+    }
   }
   private handlerLyric() {
     this.lyric.handler.subscribe(({ lineNum }) => {
       this.currentLineNum = lineNum;
-      console.log(this.currentLineNum)
+      if (!this.lyricRefs) {
+        this.lyricRefs = this.wyScroll.last.el.nativeElement.querySelectorAll('ul li');
+        console.log('lyricRefs', this.lyricRefs)
+      }
+      if (this.lyricRefs.length) {
+        this.currentLineNum = lineNum;
+        if (lineNum > this.startLine) {
+          this.scrollToCurrentLyric(300);
+        } else {
+          this.wyScroll.last.scrollTo(0, 0);
+        }
+      }
     })
   }
   private updateCurrentIndex() {
@@ -97,5 +123,10 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
         this.wyScroll.first.scrollToElement(currentLi, speed, null, null);
       }
     }
+  }
+  private scrollToCurrentLyric(speed = 300) {
+    console.log('currentLine', this.currentLineNum)
+    const targetLine = this.lyricRefs[this.currentLineNum - this.startLine];
+    this.wyScroll.last.scrollToElement(targetLine, speed, false, false);
   }
 }

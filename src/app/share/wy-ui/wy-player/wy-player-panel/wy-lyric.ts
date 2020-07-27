@@ -128,7 +128,7 @@ export class WyLyric {
             this.pauseStamp = now;
         }
     }
-    private stop() {
+    public stop() {
         this.playing = false;
         clearTimeout(this.timer);
     }
