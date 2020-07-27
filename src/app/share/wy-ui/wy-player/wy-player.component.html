@@ -50,7 +50,8 @@
         </div>
       </div>
       <app-wy-player-panel [songList]='songList' [currentSong]='currentSong' [show]='showPanel'
-        (onClose)='showPanel=false' (onChangeSong)='onChangeSong($event)' [playing]="playing">
+        (onClose)='showPanel=false' (onChangeSong)='onChangeSong($event)' [playing]="playing"
+        (onDeleteSong)='onDeleteSong($event)' (onClearSong)='onClearSong($event)'>
       </app-wy-player-panel>
     </div>
   </div>

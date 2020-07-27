@@ -7,7 +7,7 @@
       </div>
       <span class="line"></span>
       <div class="clear-all">
-        <i class="icon trush" title="清除"></i>收藏全部
+        <i class="icon trush" title="清除" (click)='onClearSong.emit()'></i>清空
       </div>
       <p class="playing-name">{{currentSong?.name}}</p>
       <i class="icon close" (click)="onClose.emit()"></i>
@@ -25,7 +25,7 @@
           <div class="col icons">
             <i class='ico like' title="收藏"></i>
             <i class='ico share' title="分享"></i>
-            <i class='ico trush' title="删除"></i>
+            <i class='ico trush' title="删除" (click)='onDeleteSong.emit(song)'></i>
           </div>
           <div class="singers clearfix ellipsis">
             <div class="singer-item" *ngFor="let songer of song.ar;last as isLast">

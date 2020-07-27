@@ -2,11 +2,11 @@ import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef, Inject } f
 import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
 import { selectSongList, selectPlayList, selectCurrentIndex, selectPlayMode, selectCurrentSong, getPlayer } from 'src/app/store/selectors/player.selector';
-import { setPlayList, setCurrentIndex, setPlayMode } from 'src/app/store/actions/player.action';
+import { setPlayList, setCurrentIndex, setPlayMode, setSongList } from 'src/app/store/actions/player.action';
 import { Song } from 'src/app/types/common.model';
 import { PlayMode } from './wy-player.model';
 import { TimeHolder } from 'ng-zorro-antd/time-picker/time-holder';
-import { SliderValue } from 'ng-zorro-antd';
+import { SliderValue, NzModalService } from 'ng-zorro-antd';
 import { Subscription, fromEvent } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
@@ -57,7 +57,8 @@ export class WyPlayerComponent implements OnInit {
   winClick: Subscription;
   constructor(
     private store$: Store<AppStoreModule>,
-    @Inject(DOCUMENT) private doc: Document
+    @Inject(DOCUMENT) private doc: Document,
+    private nzModalServe: NzModalService,
   ) {
     this.storeInit();
   }
@@ -218,6 +219,31 @@ export class WyPlayerComponent implements OnInit {
   //切换歌曲
   onChangeSong(song) {
     this.updateCurrentIndex(this.playList, song);
+  }
+  onDeleteSong(song: Song) {
+    const songList = this.songList.slice();
+    const playList = this.playList.slice();
+    let currentIndex = this.currentIndex;
+    const pIndex = findIndex(playList, song);
+    const sIndex = findIndex(songList, song);
+    songList.splice(sIndex, 1);
+    playList.splice(pIndex, 1);
+    if (currentIndex > pIndex || currentIndex === playList.length) {
+      currentIndex--;
+    }
+    this.store$.dispatch(setPlayList({ playList }));
+    this.store$.dispatch(setSongList({ songList }));
+    this.store$.dispatch(setCurrentIndex({ currentIndex }));
+  }
+  onClearSong() {
+    this.nzModalServe.confirm({
+      nzTitle: '确认情空列表',
+      nzOnOk: () => {
+        this.store$.dispatch(setPlayList({ playList: [] }));
+        this.store$.dispatch(setSongList({ songList: [] }));
+        this.store$.dispatch(setCurrentIndex({ currentIndex: -1 }));
+      }
+    })
   }
   private loop() {
     this.audio.currentTime = 0;

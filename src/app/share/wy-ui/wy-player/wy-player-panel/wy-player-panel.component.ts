@@ -19,6 +19,8 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
   @Input() playing: boolean;
   @Output() onClose = new EventEmitter<void>();
   @Output() onChangeSong = new EventEmitter<Song>();
+  @Output() onDeleteSong = new EventEmitter<Song>();
+  @Output() onClearSong = new EventEmitter<void>();
   @ViewChildren(WyScrollComponent) private wyScroll: QueryList<WyScrollComponent>;
   private lyric: WyLyric;
   private lyricRefs: NodeList;
