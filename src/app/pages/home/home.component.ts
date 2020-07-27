@@ -12,6 +12,7 @@ import { setPlayList, setSongList, setCurrentIndex } from 'src/app/store/actions
 import { PlayerState } from 'src/app/store/reducers/plaer.reducer';
 import { getPlayer } from 'src/app/store/selectors/player.selector';
 import { shuffle, findIndex } from 'src/app/utils/array';
+import { BatchActionsService } from 'src/app/store/batch-actions.service';
 
 @Component({
   selector: 'app-home',
@@ -24,12 +25,12 @@ export class HomeComponent implements OnInit {
   songSheetList: SongSheet[];
   singers: Singer[];
   carouselIndex = 0;
-  playState: PlayerState;
+
   @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
   constructor(
     private router: ActivatedRoute,
     private sheetService: SheetService,
-    private store$: Store<AppStoreModule>,
+    private batchActionService: BatchActionsService,
   ) {
     this.router.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, perosonal, singers]) => {
       this.banners = banners;
@@ -37,9 +38,7 @@ export class HomeComponent implements OnInit {
       this.songSheetList = perosonal;
       this.singers = singers;
     });
-    this.store$.pipe(select(getPlayer)).subscribe(res => {
-      this.playState = res
-    })
+
   }
 
   ngOnInit() {
@@ -51,18 +50,8 @@ export class HomeComponent implements OnInit {
     this.nzCarousel[type]();
   }
   onPlaySheet(id: number) {
-    console.log(id);
     this.sheetService.playSheet(id).subscribe(list => {
-      this.store$.dispatch(setSongList({ songList: list }));
-      let trueList = list.slice();
-      let trueIndex = 0;
-      //随机模式时更改songList
-      if (this.playState.playMode.type === 'random') {
-        trueList = shuffle(trueList || []);
-        trueIndex = findIndex(trueList, list[trueIndex])
-      }
-      this.store$.dispatch(setPlayList({ playList: trueList }));
-      this.store$.dispatch(setCurrentIndex({ currentIndex: trueIndex }));
+      this.batchActionService.selectPlayList({ list, index: 0 });
     });
   }
 }

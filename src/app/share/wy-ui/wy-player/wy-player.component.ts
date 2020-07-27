@@ -11,6 +11,7 @@ import { Subscription, fromEvent } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
+import { BatchActionsService } from 'src/app/store/batch-actions.service';
 
 // type: 'loop' | 'random' | 'singleLoop',
 // label: '循环' | '随机' | '单曲循环',
@@ -59,6 +60,7 @@ export class WyPlayerComponent implements OnInit {
     private store$: Store<AppStoreModule>,
     @Inject(DOCUMENT) private doc: Document,
     private nzModalServe: NzModalService,
+    private batchActionServe: BatchActionsService,
   ) {
     this.storeInit();
   }
@@ -221,27 +223,13 @@ export class WyPlayerComponent implements OnInit {
     this.updateCurrentIndex(this.playList, song);
   }
   onDeleteSong(song: Song) {
-    const songList = this.songList.slice();
-    const playList = this.playList.slice();
-    let currentIndex = this.currentIndex;
-    const pIndex = findIndex(playList, song);
-    const sIndex = findIndex(songList, song);
-    songList.splice(sIndex, 1);
-    playList.splice(pIndex, 1);
-    if (currentIndex > pIndex || currentIndex === playList.length) {
-      currentIndex--;
-    }
-    this.store$.dispatch(setPlayList({ playList }));
-    this.store$.dispatch(setSongList({ songList }));
-    this.store$.dispatch(setCurrentIndex({ currentIndex }));
+    this.batchActionServe.deleteSong(song);
   }
   onClearSong() {
     this.nzModalServe.confirm({
       nzTitle: '确认情空列表',
       nzOnOk: () => {
-        this.store$.dispatch(setPlayList({ playList: [] }));
-        this.store$.dispatch(setSongList({ songList: [] }));
-        this.store$.dispatch(setCurrentIndex({ currentIndex: -1 }));
+        this.batchActionServe.clearSong();
       }
     })
   }
