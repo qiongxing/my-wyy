@@ -1,5 +1,5 @@
 import { Lyrics } from 'src/app/types/common.model';
-import { zip, from, Subject } from 'rxjs';
+import { zip, from, Subject, Subscription, timer } from 'rxjs';
 import { skip } from 'rxjs/internal/operators';
 
 export interface BaseLyricLine {
@@ -21,9 +21,10 @@ export class WyLyric {
     private curNum: number;
     private startStamp: number;
     private pauseStamp: number;
-    private timer: any;
+    private timer$: Subscription;
     lines: LyricLine[] = [];
     handler = new Subject<Handler>();
+
     constructor(lrc: Lyrics) {
         console.log(lrc)
         this.lrc = lrc;
@@ -90,7 +91,7 @@ export class WyLyric {
         /**当前播放时间 */
         this.startStamp = Date.now() - startTime;
         if (this.curNum < this.lines.length) {
-            clearTimeout(this.timer);
+            this.clearTimer();
             this.playReset();
         }
     }
@@ -98,13 +99,12 @@ export class WyLyric {
         const line = this.lines[this.curNum];
         //歌词时间-经过时间=延迟
         const delay = line.time - (Date.now() - this.startStamp);
-        this.timer = setTimeout(() => {
+        timer(delay).subscribe(() => {
             this.callHandler(this.curNum++);
-            console.log(this.curNum)
             if (this.playing && this.curNum < this.lines.length - 1) {
                 this.playReset();
             }
-        }, delay)
+        })
     }
     private callHandler(i: number) {
         this.handler.next({
@@ -116,6 +116,9 @@ export class WyLyric {
     private findCurNum(time): number {
         const index = this.lines.findIndex(line => line.time >= time);
         return index !== -1 ? index : this.lines.length - 1;
+    }
+    private clearTimer() {
+        this.timer$ && this.timer$.unsubscribe();
     }
     togglePlay(playing) {
         const now = Date.now();
@@ -130,6 +133,10 @@ export class WyLyric {
     }
     public stop() {
         this.playing = false;
-        clearTimeout(this.timer);
+        this.clearTimer();
     }
+    seek(time: number) {
+        this.play(time);
+    }
+
 }

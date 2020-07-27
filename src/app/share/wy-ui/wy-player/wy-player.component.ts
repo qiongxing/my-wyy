@@ -10,6 +10,7 @@ import { SliderValue } from 'ng-zorro-antd';
 import { Subscription, fromEvent } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
+import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 
 // type: 'loop' | 'random' | 'singleLoop',
 // label: '循环' | '随机' | '单曲循环',
@@ -33,6 +34,8 @@ const modeTypes: PlayMode[] = [
   styleUrls: ['./wy-player.component.less'],
 })
 export class WyPlayerComponent implements OnInit {
+  @ViewChild('audioEl', { static: true }) private audioEl: ElementRef;
+  @ViewChild(WyPlayerPanelComponent, { static: false }) private playerPanel: WyPlayerPanelComponent;
   persent = 0;
   bufferPersent = 0;
   volume = 60;//播放音量
@@ -42,7 +45,6 @@ export class WyPlayerComponent implements OnInit {
   currentSong: Song;
   duration: number;//歌曲时长
   currentTime: number;//播放时间
-  @ViewChild('audioEl', { static: true }) private audioEl: ElementRef;
   audio: HTMLAudioElement;
   playing: boolean = false;
   songReady: boolean = false;
@@ -152,7 +154,11 @@ export class WyPlayerComponent implements OnInit {
   }
   onPersentChange(value) {
     if (this.currentSong) {
-      this.audio.currentTime = this.duration * (value / 100);
+      let currentTime = this.duration * (value / 100)
+      this.audio.currentTime = currentTime;
+      if (this.playerPanel) {
+        this.playerPanel.seekLyric(currentTime * 1000);
+      }
     }
   }
   onVolumeChange(value) {
@@ -216,6 +222,9 @@ export class WyPlayerComponent implements OnInit {
   private loop() {
     this.audio.currentTime = 0;
     this.audio.play();
+    if (this.playerPanel) {
+      this.playerPanel.seekLyric(0);
+    }
   }
   private play() {
     this.audio.play();

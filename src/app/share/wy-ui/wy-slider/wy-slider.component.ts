@@ -195,8 +195,9 @@ export class WySliderComponent implements OnInit, OnDestroy, ControlValueAccesso
   }
   private onValueChange(value: SliderValue) { };
   private onTouch(value: SliderValue) { };
+
   writeValue(value: any): void {
-    this.setValue(value);
+    this.setValue(value, true);
   }
   registerOnChange(fn: (value: SliderValue) => void): void {
     this.onValueChange = fn;

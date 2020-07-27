@@ -68,10 +68,8 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
     }
   }
   private updateLyrics() {
-    console.log("更新歌词")
     this.resetLyric();
     this.songSer.getLyrics(this.currentSong.id).subscribe(res => {
-      console.log('test')
       this.lyric = new WyLyric(res);
       this.currentLyric = this.lyric.lines;
       this.startLine = res.tlyric ? 1 : 3;
@@ -125,8 +123,12 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
     }
   }
   private scrollToCurrentLyric(speed = 300) {
-    console.log('currentLine', this.currentLineNum)
     const targetLine = this.lyricRefs[this.currentLineNum - this.startLine];
     this.wyScroll.last.scrollToElement(targetLine, speed, false, false);
+  }
+  seekLyric(time: number) {
+    if (this.lyric) {
+      this.lyric.seek(time);
+    }
   }
 }
