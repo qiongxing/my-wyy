@@ -29,11 +29,11 @@ export class SheetService {
     const params = new HttpParams({ fromString: queryString.stringify(args) });
     return this.http.get(this.url + 'top/playlist', { params }).pipe(map(res => res as SheetList));
   }
-
-  getSongSheetDetail(id: number): Observable<SongSheet[]> {
+  /**获取歌单详情 */
+  getSongSheetDetail(id: number): Observable<SongSheet> {
     const params = new HttpParams().set('id', id.toString());
     return this.http.get(this.url + 'playlist/detail', { params })
-      .pipe(map((res: { playlist: SongSheet[] }) => res.playlist));
+      .pipe(map((res: { playlist: SongSheet }) => res.playlist));
   }
   //返回歌单详情数据
   playSheet(id): Observable<Song[]> {
