@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SheetParams, SheetService } from 'src/app/services/sheet.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SheetList } from 'src/app/types/common.model';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 
@@ -21,6 +21,7 @@ export class SheetListComponent implements OnInit {
   orderValue = 'hot';
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private sheetServe: SheetService,
     private batchActionService: BatchActionsService,
   ) {
@@ -49,5 +50,8 @@ export class SheetListComponent implements OnInit {
     this.sheetServe.playSheet(id).subscribe(list => {
       this.batchActionService.selectPlayList({ list, index: 0 });
     });
+  }
+  toInfo(id: number) {
+    this.router.navigate(['/sheetInfo', id]);
   }
 }

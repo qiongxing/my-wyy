@@ -13,7 +13,7 @@
 
     <div class="list">
       <app-single-sheet class="sheet-item" *ngFor="let item of sheet?.playlists" [sheet]='item'
-        (onPlay)="onPlaySheet($event)">
+        (onPlay)="onPlaySheet($event)" (click)='toInfo(item.id)'>
       </app-single-sheet>
     </div>
 

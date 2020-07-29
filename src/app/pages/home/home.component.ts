@@ -28,11 +28,12 @@ export class HomeComponent implements OnInit {
 
   @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
   constructor(
-    private router: ActivatedRoute,
+    private route: ActivatedRoute,
+    private router: Router,
     private sheetService: SheetService,
     private batchActionService: BatchActionsService,
   ) {
-    this.router.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, perosonal, singers]) => {
+    this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, perosonal, singers]) => {
       this.banners = banners;
       this.hotTags = hotTags;
       this.songSheetList = perosonal;
@@ -53,5 +54,8 @@ export class HomeComponent implements OnInit {
     this.sheetService.playSheet(id).subscribe(list => {
       this.batchActionService.selectPlayList({ list, index: 0 });
     });
+  }
+  toInfo(id: number) {
+    this.router.navigate(['/sheetInfo', id]);
   }
 }
