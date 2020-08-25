@@ -132,7 +132,9 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
   }
   private scrollToCurrentLyric(speed = 300) {
     const targetLine = this.lyricRefs[this.currentLineNum - this.startLine];
-    this.wyScroll.last.scrollToElement(targetLine, speed, false, false);
+    if (targetLine) {
+      this.wyScroll.last.scrollToElement(targetLine, speed, false, false);
+    }
   }
   seekLyric(time: number) {
     if (this.lyric) {
