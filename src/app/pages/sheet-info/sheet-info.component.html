@@ -96,7 +96,7 @@
                 [class.current]='currentSong?.id===item.id'></i>
             </td>
             <td class="song-name">
-              <a href="">{{item.name}}</a>
+              <a [routerLink]='["/songInfo",item.id]'>{{item.name}}</a>
             </td>
             <td class="time-col">
               <span>{{item.dt/1000|formatTime}}</span>
