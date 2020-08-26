@@ -13,7 +13,9 @@ import { shuffle, findIndex } from '../utils/array';
 export class BatchActionsService {
   /**所有状态数据 */
   private playState: PlayerState;
-  constructor(private store$: Store<AppStoreModule>, ) {
+  constructor(
+    private store$: Store<AppStoreModule>,
+  ) {
     this.store$.pipe(select(getPlayer)).subscribe(res => {
       this.playState = res;
     })
@@ -29,6 +31,44 @@ export class BatchActionsService {
     }
     this.store$.dispatch(setPlayList({ playList: trueList }));
     this.store$.dispatch(setCurrentIndex({ currentIndex: trueIndex }));
+  }
+
+  /**添加歌曲 */
+  insertSong(song: Song, isPlay = false) {
+    const songList = this.playState.songList.slice();
+    const playList = this.playState.playList.slice();
+    let insertIndex = this.playState.currentIndex;
+    const pIndex = findIndex(playList, song);
+    if (pIndex > -1) {
+      //歌曲已经存在
+      if (isPlay) {
+        insertIndex = pIndex;
+      }
+    } else {
+      songList.push(song);
+      playList.push(song);
+      if (isPlay) {
+        insertIndex = songList.length - 1;
+      }
+      this.store$.dispatch(setSongList({ songList }));
+      this.store$.dispatch(setPlayList({ playList }));
+    }
+    if (insertIndex !== this.playState.currentIndex) {
+      this.store$.dispatch(setCurrentIndex({ currentIndex: insertIndex }));
+    }
+  }
+  insertSongs(songs: Song[]) {
+    const songList = this.playState.songList.slice();
+    const playList = this.playState.playList.slice();
+    songs.forEach(song => {
+      const pIndex = findIndex(playList, song);
+      if (pIndex === -1) {
+        playList.push(song);
+        songList.push(song);
+      }
+    })
+    this.store$.dispatch(setSongList({ songList }));
+    this.store$.dispatch(setPlayList({ playList }));
   }
   /**删除歌曲 */
   deleteSong(song: Song) {
