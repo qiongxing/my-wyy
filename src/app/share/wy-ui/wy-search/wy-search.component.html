@@ -1,0 +1,8 @@
+<ng-template #defaultView>
+  <div class="search">
+    <nz-input-group nzSuffixIcon="search">
+      <input type="text" #nzInput nz-input placeholder="歌曲/歌手/歌单">
+    </nz-input-group>
+  </div>
+</ng-template>
+<ng-container *ngTemplateOutlet="customView?customView:defaultView"></ng-container>
