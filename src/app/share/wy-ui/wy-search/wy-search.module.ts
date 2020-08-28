@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { WySearchRoutingModule } from './wy-search-routing.module';
 import { WySearchComponent } from './wy-search.component';
 import { NzIconModule, NzInputModule } from 'ng-zorro-antd';
+import { OverlayModule } from '@angular/cdk/overlay'
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { NzIconModule, NzInputModule } from 'ng-zorro-antd';
     CommonModule,
     WySearchRoutingModule,
     NzIconModule,
-    NzInputModule
+    NzInputModule,
+    OverlayModule
   ],
   exports: [WySearchComponent]
 })

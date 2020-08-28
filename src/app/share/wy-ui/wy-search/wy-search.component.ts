@@ -20,7 +20,7 @@ export class WySearchComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     fromEvent(this.nzInput.nativeElement, 'input').pipe(debounceTime(300), distinctUntilChanged(), pluck('target', 'value'))
       .subscribe((value: string) => {
-        this.onSearch.emit(value)
+        this.onSearch.emit(value);
       })
   }
 }

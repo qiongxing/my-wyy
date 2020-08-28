@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { SearchService } from './services/search.service';
+import { SearchResult } from './types/common.model';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,7 @@ import { SearchService } from './services/search.service';
 })
 export class AppComponent {
   title = 'WyyApp';
+  searchResult: SearchResult;
   menu = [
     {
       label: '发现',
@@ -26,8 +28,10 @@ export class AppComponent {
   onSearch(keyword: string) {
     if (keyword) {
       this.searchServe.search(keyword).subscribe(res => {
-        console.log('res:', res);
+        this.searchResult = res;
       })
+    } else {
+      this.searchResult = {};
     }
   }
 }
