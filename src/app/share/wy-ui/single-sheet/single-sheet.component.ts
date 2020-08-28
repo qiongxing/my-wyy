@@ -13,7 +13,8 @@ export class SingleSheetComponent implements OnInit {
 
   ngOnInit() {
   }
-  playSheet(id: number) {
+  playSheet(event: MouseEvent, id: number) {
+    event.stopPropagation();
     this.onPlay.emit(id);
   }
   get coverImg() {

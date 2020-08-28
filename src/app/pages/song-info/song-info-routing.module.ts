@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SongInfoComponent } from './song-info.component';
-import { SongInfoResolverService } from './sheet-info-resolver.service';
+import { SongInfoResolverService } from './song-info-resolver.service';
 
 
 const routes: Routes = [

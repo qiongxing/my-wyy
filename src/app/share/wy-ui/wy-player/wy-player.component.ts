@@ -12,6 +12,8 @@ import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { Router } from '@angular/router';
 
 // type: 'loop' | 'random' | 'singleLoop',
 // label: '循环' | '随机' | '单曲循环',
@@ -60,6 +62,7 @@ export class WyPlayerComponent implements OnInit {
     @Inject(DOCUMENT) private doc: Document,
     private nzModalServe: NzModalService,
     private batchActionServe: BatchActionsService,
+    private router: Router,
   ) {
     this.storeInit();
   }
@@ -226,5 +229,12 @@ export class WyPlayerComponent implements OnInit {
   private play() {
     this.audio.play();
     this.playing = true;
+  }
+  toInfo(path: [string, number]) {
+    if (path[1]) {
+      this.showVolumePanel = false;
+      this.showPanel = false;
+      this.router.navigate(path)
+    }
   }
 }

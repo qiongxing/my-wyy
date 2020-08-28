@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { API_CONFIG } from './services.module';
 import { Observable } from 'rxjs';
-import { Singer } from '../types/common.model';
+import { Singer, SingerDetail } from '../types/common.model';
 import queryString from 'query-string';
 import { map } from 'rxjs/internal/operators';
 
@@ -28,5 +28,18 @@ export class SingerService {
     const params = new HttpParams({ fromString: queryString.stringify(args) });
     return this.http.get(this.url + 'artist/list', { params })
       .pipe(map((res: { artists }) => res.artists));
+  }
+
+  /**获取歌手详情和热门歌曲 */
+  getSingerDetail(id: string): Observable<SingerDetail> {
+    const params = new HttpParams().set('id', id);
+    return this.http.get(this.url + 'artists', { params })
+      .pipe(map((res) => res as SingerDetail))
+  }
+  /**获取相似歌手 */
+  getSimiSinger(id: string): Observable<Singer[]> {
+    const params = new HttpParams().set('id', id);
+    return this.http.get(this.url + 'artist', { params })
+      .pipe(map((res: { artists: Singer[] }) => res.artists))
   }
 }

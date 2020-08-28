@@ -1,0 +1,75 @@
+<div class="singer-detail wrap feature-wrap clearfix">
+  <div class="dt-left">
+    <div class="left-wrap">
+      <div class="n-artist">
+        <div class="names clearfix">
+          <h2 class="ellipsis">{{singerDetail.artist.name}}</h2>
+          <h3 class="ellipsis">{{singerDetail.artist.alias.join("、")}}</h3>
+        </div>
+        <div class="cover-img">
+          <img class="full-height" [src]="singerDetail.artist.picUrl" [alt]="singerDetail.artist.name">
+        </div>
+        <button class="btn btn-like"></button>
+      </div>
+      <div class="top-50">
+        <div class="btns clearfix">
+          <nz-button-group class="btn">
+            <button nz-button nzType='primary' class='play' (click)='onAddSongs(singerDetail.hotSongs,true)'>
+              <i nz-icon nzType="play-circle" nzTheme="outline"></i>播放
+            </button>
+            <button class="add" nz-button nzType="primary" (click)='onAddSongs(singerDetail.hotSongs)'>+</button>
+          </nz-button-group>
+          <button class="btn like" nz-button>
+            <span>收藏</span>{{singerDetail.hotSongs.length}}
+          </button>
+        </div>
+
+        <nz-table class="wy-table" #basicTable [nzData]="singerDetail.hotSongs" [nzFrontPagination]="false" nzBordered
+          nzNoResult="暂无音乐！">
+          <thead>
+            <tr>
+              <th nzWidth="80px"></th>
+              <th nzWidth="auto">标题</th>
+              <th nzWidth="120px">时长</th>
+              <!-- <th nzWidth="80px">时长</th> -->
+              <th>专辑</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of basicTable.data;index as i">
+              <td class="first-col">
+                <span>{{i+1}}</span>
+                <i class="ico play-song" title="播放" [class.current]="currentSong?.id===item.id"
+                  (click)='onAddSong(item,true)'></i>
+              </td>
+              <td class="song-name">
+                <a [routerLink]='["/songInfo",item.id]'>{{item.name}}</a>
+              </td>
+              <td class="time-col">
+                <span>{{item.dt/1000|formatTime}}</span>
+                <p class="icons">
+                  <i class="ico add" title="添加" (click)='onAddSong(item)'></i>
+                  <i class="ico like" title="收藏"></i>
+                  <i class="ico share" title="分享"></i>
+                </p>
+              </td>
+              <!-- <td>
+                <ng-container *ngFor="let singer of item.ar;last as isLast">
+                  <a href="">{{singer.name}}</a>
+                  <em [hidden]='isLast'>/</em>
+                </ng-container>
+              </td> -->
+              <td>{{item.al.name}}</td>
+            </tr>
+          </tbody>
+
+        </nz-table>
+      </div>
+    </div>
+  </div>
+  <div class="dt-right">
+    <div class="right-wrap">
+      <h3>相似歌曲</h3>
+    </div>
+  </div>
+</div>
