@@ -14,6 +14,7 @@ import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.compon
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Router } from '@angular/router';
+import { trigger, style, state, transition, animate } from '@angular/animations';
 
 // type: 'loop' | 'random' | 'singleLoop',
 // label: '循环' | '随机' | '单曲循环',
@@ -35,10 +36,22 @@ const modeTypes: PlayMode[] = [
   selector: 'app-wy-player',
   templateUrl: './wy-player.component.html',
   styleUrls: ['./wy-player.component.less'],
+  animations: [
+    trigger('showHide', [
+      state('show', style({ bottom: 0 })),
+      state('hide', style({ bottom: -71 })),
+      transition('show=>hide', [animate('0.3s')]),
+      transition('hide=>show', [animate('0.1s')]),
+    ])
+  ]
 })
 export class WyPlayerComponent implements OnInit {
   @ViewChild('audioEl', { static: true }) private audioEl: ElementRef;
   @ViewChild(WyPlayerPanelComponent, { static: false }) private playerPanel: WyPlayerPanelComponent;
+  showPlayer = 'hide';
+  isLocked = false;
+  animating = false;
+
   persent = 0;
   bufferPersent = 0;
   volume = 60;//播放音量
@@ -235,6 +248,12 @@ export class WyPlayerComponent implements OnInit {
       this.showVolumePanel = false;
       this.showPanel = false;
       this.router.navigate(path)
+    }
+  }
+
+  toggerPlayer(type: string) {
+    if (!this.isLocked && !this.animating) {
+      this.showPlayer = type;
     }
   }
 }
