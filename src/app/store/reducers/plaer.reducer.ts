@@ -1,7 +1,15 @@
 import { PlayMode } from 'src/app/share/wy-ui/wy-player/wy-player.model';
 import { Song } from 'src/app/types/common.model';
 import { createReducer, on } from '@ngrx/store';
-import { setPlaying, setPlayMode, setSongList, setPlayList, setCurrentIndex } from '../actions/player.action';
+import { setPlaying, setPlayMode, setSongList, setPlayList, setCurrentIndex, setCurrentAction } from '../actions/player.action';
+
+export enum CurrentActions {
+    Add,
+    Play,
+    Delete,
+    Clear,
+    Other
+}
 
 export type PlayerState = {
     //播放状态
@@ -14,6 +22,8 @@ export type PlayerState = {
     playList: Song[];
     //当前播放的索引
     currentIndex: number;
+    //当前操作
+    currentAction: CurrentActions;
 }
 
 const initPlayerState: PlayerState = {
@@ -21,7 +31,8 @@ const initPlayerState: PlayerState = {
     playMode: { type: 'loop', label: '循环' },
     songList: [],
     playList: [],
-    currentIndex: -1
+    currentIndex: -1,
+    currentAction: CurrentActions.Other
 }
 
 export const playerReducer = createReducer(initPlayerState,
@@ -29,5 +40,6 @@ export const playerReducer = createReducer(initPlayerState,
     on(setPlayMode, (state, { playMode }) => ({ ...state, playMode })),
     on(setSongList, (state, { songList }) => ({ ...state, songList })),
     on(setPlayList, (state, { playList }) => ({ ...state, playList })),
-    on(setCurrentIndex, (state, { currentIndex }) => ({ ...state, currentIndex }))
+    on(setCurrentIndex, (state, { currentIndex }) => ({ ...state, currentIndex })),
+    on(setCurrentAction, (state, { currentAction }) => ({ ...state, currentAction })),
 )

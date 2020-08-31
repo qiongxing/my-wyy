@@ -1,20 +1,21 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef, Inject } from '@angular/core';
 import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
-import { selectSongList, selectPlayList, selectCurrentIndex, selectPlayMode, selectCurrentSong, getPlayer } from 'src/app/store/selectors/player.selector';
-import { setPlayList, setCurrentIndex, setPlayMode, setSongList } from 'src/app/store/actions/player.action';
+import { selectSongList, selectPlayList, selectCurrentIndex, selectPlayMode, selectCurrentSong, getPlayer, selectCurrentAction } from 'src/app/store/selectors/player.selector';
+import { setPlayList, setCurrentIndex, setPlayMode, setSongList, setCurrentAction } from 'src/app/store/actions/player.action';
 import { Song } from 'src/app/types/common.model';
 import { PlayMode } from './wy-player.model';
 import { TimeHolder } from 'ng-zorro-antd/time-picker/time-holder';
 import { SliderValue, NzModalService } from 'ng-zorro-antd';
-import { Subscription, fromEvent } from 'rxjs';
+import { Subscription, fromEvent, timer } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Router } from '@angular/router';
-import { trigger, style, state, transition, animate } from '@angular/animations';
+import { trigger, style, state, transition, animate, AnimationEvent } from '@angular/animations';
+import { CurrentActions } from 'src/app/store/reducers/plaer.reducer';
 
 // type: 'loop' | 'random' | 'singleLoop',
 // label: '循环' | '随机' | '单曲循环',
@@ -32,6 +33,11 @@ const modeTypes: PlayMode[] = [
     label: '单曲循环',
   },
 ]
+
+enum TipTitles {
+  Add = '已添加到列表',
+  Play = '已开始播放'
+}
 @Component({
   selector: 'app-wy-player',
   templateUrl: './wy-player.component.html',
@@ -50,7 +56,13 @@ export class WyPlayerComponent implements OnInit {
   @ViewChild(WyPlayerPanelComponent, { static: false }) private playerPanel: WyPlayerPanelComponent;
   showPlayer = 'hide';
   isLocked = false;
+  //是否正在动画
   animating = false;
+
+  controlTooltip = {
+    title: '',
+    show: false,
+  }
 
   persent = 0;
   bufferPersent = 0;
@@ -90,9 +102,9 @@ export class WyPlayerComponent implements OnInit {
     appStore$.pipe(select(selectCurrentIndex)).subscribe(currentIndex => this.watchCurrentIndex(currentIndex));
     appStore$.pipe(select(selectPlayMode)).subscribe(mode => this.watchPlayMode(mode));
     appStore$.pipe(select(selectCurrentSong)).subscribe(song => this.watchCurrentSong(song));
+    appStore$.pipe(select(selectCurrentAction)).subscribe(action => this.watchCurrentAction(action));
   }
   watchCurrentSong(song: Song): void {
-    console.log('播放歌曲', song)
     if (song) {
       this.currentSong = song;
       this.duration = song.dt / 1000;
@@ -109,17 +121,47 @@ export class WyPlayerComponent implements OnInit {
       this.store$.dispatch(setPlayList({ playList: list }));
     }
   }
+
+  private watchCurrentAction(action: CurrentActions) {
+    const title = TipTitles[CurrentActions[action]];
+    if (title) {
+      this.controlTooltip.title = title;
+      if (this.showPlayer === 'hide') {
+        this.toggerPlayer('show');
+      } else {
+        this.showToolTip();
+      }
+    }
+    this.store$.dispatch(setCurrentAction({ currentAction: CurrentActions.Other }));
+  }
+
+
+  onAnnmationDone(event: AnimationEvent) {
+    this.animating = false;
+    if (event.toState === 'show' && this.controlTooltip.title) {
+      this.showToolTip();
+    }
+  }
+
+  private showToolTip() {
+    this.controlTooltip.show = true;
+    timer(1500).subscribe(() => {
+      this.controlTooltip = {
+        title: '',
+        show: false
+      }
+      // this.toggerPlayer('hide')
+    })
+  }
   /**更新当前歌曲 */
   private updateCurrentIndex(list: Song[], currentSong: Song) {
     const index = findIndex(list, currentSong);
     this.store$.dispatch(setCurrentIndex({ currentIndex: index }));
   }
   private watchList(list, type) {
-    console.log('播放歌单', type, list);
     this[type] = list;
   }
   private watchCurrentIndex(index) {
-    console.log('播放索引', index)
     this.currentIndex = index;
   }
   onCanplay() {
@@ -256,4 +298,5 @@ export class WyPlayerComponent implements OnInit {
       this.showPlayer = type;
     }
   }
+
 }

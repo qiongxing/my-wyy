@@ -9,4 +9,5 @@ export const selectPlayMode = createSelector(playerState, (state) => state.playM
 export const selectSongList = createSelector(playerState, (state) => state.songList);
 export const selectPlayList = createSelector(playerState, (state) => state.playList);
 export const selectCurrentIndex = createSelector(playerState, (state) => state.currentIndex);
+export const selectCurrentAction = createSelector(playerState, (state) => state.currentAction);
 export const selectCurrentSong = createSelector(playerState, ({ playList, currentIndex }: PlayerState) => playList[currentIndex]);
