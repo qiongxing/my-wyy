@@ -20,9 +20,10 @@ export class ClickoutsideDirective implements OnChanges {
       console.log(changes['bindFlag'])
       if (changes['bindFlag']) {
         this.handleClick = this.rd.listen(this.doc, 'click', evt => {
-          const isContain = this.el.nativeElement.contains(evt.target);
+          const target = evt.target;
+          const isContain = this.el.nativeElement.contains(target);
           if (!isContain) {
-            this.onClickOutSide.emit();
+            this.onClickOutSide.emit(target);
           }
         })
       } else {

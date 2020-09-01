@@ -1,4 +1,4 @@
-<div class="m-player" clickoutside [@showHide]="showPlayer" (onClickOutSide)='onClickOutSide()' [bindFlag]="bindFlag"
+<div class="m-player" clickoutside [@showHide]="showPlayer" (onClickOutSide)='onClickOutSide($event)' [bindFlag]="bindFlag"
   (mouseenter)='toggerPlayer("show")' (mouseleave)="toggerPlayer('hide')" (@showHide.start)="animating=true"
   (@showHide.done)="onAnnmationDone($event)">
   <div class="lock" (click)="isLocked=!isLocked">
@@ -60,5 +60,5 @@
     </div>
   </div>
   <audio #audioEl [src]='currentSong?.url' (canplay)='onCanplay()' (timeupdate)='onTimeUpdate($event)'
-    (ended)='onEnded()'></audio>
+    (ended)='onEnded()' (error)="onError()"></audio>
 </div>

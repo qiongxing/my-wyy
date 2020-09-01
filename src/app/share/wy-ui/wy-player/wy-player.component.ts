@@ -105,8 +105,8 @@ export class WyPlayerComponent implements OnInit {
     appStore$.pipe(select(selectCurrentAction)).subscribe(action => this.watchCurrentAction(action));
   }
   watchCurrentSong(song: Song): void {
+    this.currentSong = song;
     if (song) {
-      this.currentSong = song;
       this.duration = song.dt / 1000;
     }
   }
@@ -207,10 +207,12 @@ export class WyPlayerComponent implements OnInit {
     const newIndex = index > this.songList.length - 1 ? 0 : index;
     this.updateIndex(newIndex);
   }
-  onClickOutSide() {
-    this.showVolumePanel = false;
-    this.showPanel = false;
-    this.bindFlag = false;
+  onClickOutSide(target: HTMLElement) {
+    if (target.dataset.act !== "delete") {
+      this.showVolumePanel = false;
+      this.showPanel = false;
+      this.bindFlag = false;
+    }
   }
   private updateIndex(newIndex: number) {
     this.store$.dispatch(setCurrentIndex({ currentIndex: newIndex }));
@@ -258,6 +260,11 @@ export class WyPlayerComponent implements OnInit {
     } else {
       this.onNext(this.currentIndex + 1);
     }
+  }
+  /**播放错误 */
+  onError() {
+    this.playing = false;
+    this.bufferPersent = 0;
   }
   //切换歌曲
   onChangeSong(song) {
