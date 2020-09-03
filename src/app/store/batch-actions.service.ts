@@ -6,6 +6,9 @@ import { PlayerState, CurrentActions } from './reducers/plaer.reducer';
 import { Song } from '../types/common.model';
 import { setSongList, setPlayList, setCurrentIndex, setCurrentAction } from './actions/player.action';
 import { shuffle, findIndex } from '../utils/array';
+import { getMember } from './selectors/member.selector';
+import { MemberState, ModalTypes } from './reducers/member.reducer';
+import { setModalType, setModalVisible } from './actions/member.action';
 
 @Injectable({
   providedIn: AppStoreModule
@@ -13,11 +16,15 @@ import { shuffle, findIndex } from '../utils/array';
 export class BatchActionsService {
   /**所有状态数据 */
   private playState: PlayerState;
+  private memberState: MemberState;
   constructor(
     private store$: Store<AppStoreModule>,
   ) {
     this.store$.pipe(select(getPlayer)).subscribe(res => {
       this.playState = res;
+    })
+    this.store$.pipe(select(getMember)).subscribe(res => {
+      this.memberState = res;
     })
   }
   selectPlayList({ list, index = 0 }: { list: Song[], index: number }) {
@@ -98,5 +105,11 @@ export class BatchActionsService {
     this.store$.dispatch(setSongList({ songList: [] }));
     this.store$.dispatch(setCurrentIndex({ currentIndex: -1 }));
     this.store$.dispatch(setCurrentAction({ currentAction: CurrentActions.Clear }));
+  }
+
+  /**会员弹窗显示隐藏/类型 */
+  controlModal(visible = true, modalType = ModalTypes.Default) {
+    this.store$.dispatch(setModalType({ modalType }));
+    this.store$.dispatch(setModalVisible({ modalVisible: visible }));
   }
 }

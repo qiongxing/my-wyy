@@ -1,8 +1,8 @@
-<div class="m-layer">
-  <div class="zbar">
+<div class="m-layer" #modalContainer [@showHide]="showModal" cdkDrag cdkDragBoundary=".cdk-overlay-container">
+  <div class="zbar" cdkDragHandle>
     <div class="zttl f-thide">标题</div>
   </div>
   <ng-content></ng-content>
 
-  <div class="zcls" title="关闭"></div>
+  <div class="zcls" title="关闭" (click)="hide()"></div>
 </div>
