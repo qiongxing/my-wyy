@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { SearchService } from './services/search.service';
 import { SearchResult } from './types/common.model';
 import { isEmptyObject } from './utils/tool';
+import { ModalTypes } from './store/reducers/member.reducer';
+import { AppStoreModule } from './store';
+import { Store } from '@ngrx/store';
+import { setModalType } from './store/actions/member.action';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +27,7 @@ export class AppComponent {
   ]
   constructor(
     private searchServe: SearchService,
+    private store$: Store<AppStoreModule>,
   ) {
 
   }
@@ -48,5 +53,9 @@ export class AppComponent {
       })
     }
     return result;
+  }
+  /**改变弹窗类型 */
+  onChangeModalType(type = ModalTypes.Default) {
+    this.store$.dispatch(setModalType({ modalType: type }));
   }
 }

@@ -8,7 +8,6 @@ import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { ESCAPE } from "@angular/cdk/keycodes";
 import { DOCUMENT } from '@angular/common';
 import { WINDOW } from 'src/app/services/services.module';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { trigger, state, transition, animate, style } from '@angular/animations';
 
 @Component({
@@ -24,9 +23,9 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
 })
 export class WyLayerModalComponent implements OnInit, AfterViewInit {
   showModal = "hide";
+  currentModalType = ModalTypes.Default;
   @ViewChild('modalContainer', { static: false }) private modalRef: ElementRef
   private visible = false;
-  private currentModalType = ModalTypes.Default;
   private overlayRef: OverlayRef;
   private scrollStrategy: BlockScrollStrategy;
   private resizeHandle: () => void;
@@ -103,7 +102,7 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit {
   private watchModalType(modalType: ModalTypes) {
     if (this.currentModalType !== modalType) {
       this.currentModalType = modalType;
-
+      this.cdr.markForCheck();
     }
   }
   private warchModalVisible(visib: boolean) {
