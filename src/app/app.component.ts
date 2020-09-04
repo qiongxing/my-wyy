@@ -6,6 +6,8 @@ import { ModalTypes } from './store/reducers/member.reducer';
 import { AppStoreModule } from './store';
 import { Store } from '@ngrx/store';
 import { setModalType } from './store/actions/member.action';
+import { BatchActionsService } from './store/batch-actions.service';
+import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 
 @Component({
   selector: 'app-root',
@@ -28,8 +30,13 @@ export class AppComponent {
   constructor(
     private searchServe: SearchService,
     private store$: Store<AppStoreModule>,
+    private bactchActionsServe: BatchActionsService
   ) {
 
+  }
+  /**打开弹窗 */
+  openModal(type: ModalTypes) {
+    this.bactchActionsServe.controlModal(true, type)
   }
   onSearch(keyword: string) {
     if (keyword) {
@@ -57,5 +64,8 @@ export class AppComponent {
   /**改变弹窗类型 */
   onChangeModalType(type = ModalTypes.Default) {
     this.store$.dispatch(setModalType({ modalType: type }));
+  }
+  onLogin(value: LoginParams) {
+
   }
 }

@@ -20,11 +20,11 @@
                   </div>
                   <ul>
                     <li nz-menu-item>
-                      <i nz-icon type='mobile' nzTheme='outline'></i>
+                      <i nz-icon type='mobile' nzTheme='outline' (click)="openModal('loginByPhone')"></i>
                       手机登录
                     </li>
                     <li nz-menu-item>
-                      <i nz-icon type='user-add' nzTheme='outline'></i>
+                      <i nz-icon type='user-add' nzTheme='outline' (click)="openModal('loginByPhone')"></i>
                       注册
                     </li>
                   </ul>
@@ -45,6 +45,6 @@
 </div>
 <app-wy-player></app-wy-player>
 <app-wy-layer-modal>
-  <app-wy-layer-login name="login"></app-wy-layer-login>
+  <app-wy-layer-login name="login" (onLogin)="onLogin($event)"></app-wy-layer-login>
   <app-wy-layer-default (onChangeModalType)="onChangeModalType($event)"></app-wy-layer-default>
 </app-wy-layer-modal>

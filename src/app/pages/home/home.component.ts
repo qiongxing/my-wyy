@@ -13,6 +13,7 @@ import { PlayerState } from 'src/app/store/reducers/plaer.reducer';
 import { getPlayer } from 'src/app/store/selectors/player.selector';
 import { shuffle, findIndex } from 'src/app/utils/array';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
+import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 
 @Component({
   selector: 'app-home',
@@ -60,6 +61,6 @@ export class HomeComponent implements OnInit {
   }
 
   openModal() {
-    this.batchActionService.controlModal();
+    this.batchActionService.controlModal(true, ModalTypes.Default);
   }
 }
