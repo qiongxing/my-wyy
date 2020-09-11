@@ -1,11 +1,12 @@
 import { Injectable, Inject } from "@angular/core";
 import { ServicesModule, API_CONFIG } from './services.module';
 import { Observable } from 'rxjs';
-import { Banner, HotTag, SongSheet } from '../types/common.model';
-import { HttpClient } from '@angular/common/http';
+import { Banner, HotTag, SongSheet, sampleBack } from '../types/common.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators';
 import { LoginParams } from '../share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 import { User } from './data-types/member.type';
+import queryString from "query-string";
 
 @Injectable({
     providedIn: ServicesModule
@@ -18,6 +19,16 @@ export class MemberService {
 
     /**登录 */
     login(formValue: LoginParams): Observable<User> {
-        return
+        const params = new HttpParams({ fromString: queryString.stringify(formValue) });
+        return this.http.get(this.url + "login/cellphone", { params }).pipe(map((res) => res as User))
+    }
+    /**用户详情 */
+    getUserDetail(uid: string): Observable<User> {
+        const params = new HttpParams({ fromString: queryString.stringify({ uid }) });
+        return this.http.get(this.url + "user/detail", { params }).pipe(map((res) => res as User))
+    }
+    //退出
+    logout(): Observable<sampleBack> {
+        return this.http.get(this.url + "logout").pipe(map((res) => res as sampleBack))
     }
 }

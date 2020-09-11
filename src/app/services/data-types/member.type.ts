@@ -10,7 +10,10 @@ export interface Signin {
 export interface User {
   // 等级
   level?: number;
-
+  //调用状态
+  code?: number;
+  //返回信息
+  message?: string;
   // 听歌记录
   listenSongs?: number;
 

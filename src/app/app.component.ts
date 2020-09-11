@@ -8,6 +8,10 @@ import { Store } from '@ngrx/store';
 import { setModalType } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
+import { MemberService } from './services/member.service';
+import { User } from './services/data-types/member.type';
+import { NzMessageService } from 'ng-zorro-antd';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +21,7 @@ import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-logi
 export class AppComponent {
   title = 'WyyApp';
   searchResult: SearchResult;
+  user: User;
   menu = [
     {
       label: '发现',
@@ -30,9 +35,22 @@ export class AppComponent {
   constructor(
     private searchServe: SearchService,
     private store$: Store<AppStoreModule>,
-    private bactchActionsServe: BatchActionsService
+    private bactchActionsServe: BatchActionsService,
+    private memberServe: MemberService,
+    private messageServe: NzMessageService
   ) {
-
+    const userId = localStorage.getItem("wyUserId");
+    if (userId) {
+      this.memberServe.getUserDetail(userId).subscribe(res => {
+        if (res.code !== 200) {
+          this.alertMessage('error', res.message || "获取详情失败")
+        } else {
+          this.user = res;
+        }
+      }, ({ error }) => {
+        this.alertMessage('error', error.message || "获取详情失败")
+      })
+    }
   }
   /**打开弹窗 */
   openModal(type: ModalTypes) {
@@ -65,7 +83,40 @@ export class AppComponent {
   onChangeModalType(type = ModalTypes.Default) {
     this.store$.dispatch(setModalType({ modalType: type }));
   }
-  onLogin(value: LoginParams) {
+  onLogin(params: LoginParams) {
+    this.memberServe.login(params).subscribe(user => {
+      if (user.code !== 200) {
+        this.alertMessage('error', user.message || "登陆失败")
+      } else {
+        this.user = user;
+        this.bactchActionsServe.controlModal(false);
+        this.alertMessage('success', "登陆成功");
+        localStorage.setItem("wyUserId", user.profile.userId.toString());
 
+        if (params.remember) {
+          localStorage.setItem("wyRememberLogin", JSON.stringify(params))
+        } else {
+          localStorage.removeItem("wyRememberLogin")
+        }
+      }
+    }, ({ error }) => {
+      this.alertMessage('error', error.message || "登陆失败")
+    })
+  }
+  onLogout() {
+    this.memberServe.logout().subscribe(res => {
+      if (res.code !== 200) {
+        this.alertMessage('error', res.message || "退出失败")
+      } else {
+        this.user=null;
+        localStorage.removeItem("wyUserId")
+        this.alertMessage('success', "退出成功")
+      }
+    }, ({ error }) => {
+      this.alertMessage('error', error.message || "退出失败")
+    })
+  }
+  private alertMessage(type: string, msg: string) {
+    this.messageServe.create(type, msg)
   }
 }
