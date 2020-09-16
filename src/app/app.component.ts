@@ -5,13 +5,15 @@ import { isEmptyObject } from './utils/tool';
 import { ModalTypes } from './store/reducers/member.reducer';
 import { AppStoreModule } from './store';
 import { Store } from '@ngrx/store';
-import { setModalType } from './store/actions/member.action';
+import { setModalType, setUserId } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 import { MemberService } from './services/member.service';
 import { User } from './services/data-types/member.type';
 import { NzMessageService } from 'ng-zorro-antd';
 import { HttpParams } from '@angular/common/http';
+import { codeJson } from './utils/base64';
+import { StorageService } from './services/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +23,7 @@ import { HttpParams } from '@angular/common/http';
 export class AppComponent {
   title = 'WyyApp';
   searchResult: SearchResult;
+  wyRememberLogin: LoginParams;
   user: User;
   menu = [
     {
@@ -37,10 +40,12 @@ export class AppComponent {
     private store$: Store<AppStoreModule>,
     private bactchActionsServe: BatchActionsService,
     private memberServe: MemberService,
-    private messageServe: NzMessageService
+    private messageServe: NzMessageService,
+    private storageServe: StorageService,
   ) {
-    const userId = localStorage.getItem("wyUserId");
+    const userId = this.storageServe.getStorage("wyUserId");
     if (userId) {
+      this.store$.dispatch(setUserId({ userId }));
       this.memberServe.getUserDetail(userId).subscribe(res => {
         if (res.code !== 200) {
           this.alertMessage('error', res.message || "获取详情失败")
@@ -50,6 +55,11 @@ export class AppComponent {
       }, ({ error }) => {
         this.alertMessage('error', error.message || "获取详情失败")
       })
+    }
+
+    const wyRememberLogin = this.storageServe.getStorage("wyRememberLogin")
+    if (wyRememberLogin) {
+      this.wyRememberLogin = JSON.parse(wyRememberLogin);
     }
   }
   /**打开弹窗 */
@@ -91,12 +101,12 @@ export class AppComponent {
         this.user = user;
         this.bactchActionsServe.controlModal(false);
         this.alertMessage('success', "登陆成功");
-        localStorage.setItem("wyUserId", user.profile.userId.toString());
-
+        this.storageServe.setStorage({ key: "wyUserId", value: user.profile.userId });
+        this.store$.dispatch(setUserId({ userId: user.profile.userId.toString() }));
         if (params.remember) {
-          localStorage.setItem("wyRememberLogin", JSON.stringify(params))
+          this.storageServe.setStorage({ key: "wyRememberLogin", value: JSON.stringify(codeJson(params)) });
         } else {
-          localStorage.removeItem("wyRememberLogin")
+          this.storageServe.removeStorage("wyRememberLogin")
         }
       }
     }, ({ error }) => {
@@ -108,9 +118,10 @@ export class AppComponent {
       if (res.code !== 200) {
         this.alertMessage('error', res.message || "退出失败")
       } else {
-        this.user=null;
-        localStorage.removeItem("wyUserId")
+        this.user = null;
+        this.storageServe.removeStorage("wyUserId")
         this.alertMessage('success', "退出成功")
+        this.store$.dispatch(setUserId({ userId: "" }));
       }
     }, ({ error }) => {
       this.alertMessage('error', error.message || "退出失败")

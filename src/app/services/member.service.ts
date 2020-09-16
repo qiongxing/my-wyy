@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 import { ServicesModule, API_CONFIG } from './services.module';
 import { Observable } from 'rxjs';
-import { Banner, HotTag, SongSheet, sampleBack } from '../types/common.model';
+import { Banner, HotTag, SongSheet, SampleBack } from '../types/common.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators';
 import { LoginParams } from '../share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
@@ -28,7 +28,7 @@ export class MemberService {
         return this.http.get(this.url + "user/detail", { params }).pipe(map((res) => res as User))
     }
     //退出
-    logout(): Observable<sampleBack> {
-        return this.http.get(this.url + "logout").pipe(map((res) => res as sampleBack))
+    logout(): Observable<SampleBack> {
+        return this.http.get(this.url + "logout").pipe(map((res) => res as SampleBack))
     }
 }
