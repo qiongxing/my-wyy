@@ -1,5 +1,6 @@
 import { NgModule, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { httpInterceptorProvides } from './http-interceptors';
 
 export const API_CONFIG = new InjectionToken('ApiConfigToken')
 export const WINDOW = new InjectionToken('WindowToken')
@@ -18,7 +19,7 @@ export const WINDOW = new InjectionToken('WindowToken')
       },
       deps: [PLATFORM_ID]
     },
-
+    httpInterceptorProvides,
   ]
 })
 export class ServicesModule { }

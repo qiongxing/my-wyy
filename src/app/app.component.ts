@@ -52,7 +52,7 @@ export class AppComponent {
         } else {
           this.user = res;
         }
-      }, ({ error }) => {
+      }, error => {
         this.alertMessage('error', error.message || "获取详情失败")
       })
     }
@@ -109,7 +109,7 @@ export class AppComponent {
           this.storageServe.removeStorage("wyRememberLogin")
         }
       }
-    }, ({ error }) => {
+    }, error => {
       this.alertMessage('error', error.message || "登陆失败")
     })
   }
@@ -123,7 +123,7 @@ export class AppComponent {
         this.alertMessage('success', "退出成功")
         this.store$.dispatch(setUserId({ userId: "" }));
       }
-    }, ({ error }) => {
+    }, error => {
       this.alertMessage('error', error.message || "退出失败")
     })
   }

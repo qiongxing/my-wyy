@@ -5,7 +5,7 @@ import { Banner, HotTag, SongSheet, SampleBack } from '../types/common.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators';
 import { LoginParams } from '../share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
-import { User } from './data-types/member.type';
+import { Signin, User } from './data-types/member.type';
 import queryString from "query-string";
 
 @Injectable({
@@ -30,5 +30,10 @@ export class MemberService {
     //退出
     logout(): Observable<SampleBack> {
         return this.http.get(this.url + "logout").pipe(map((res) => res as SampleBack))
+    }
+
+    signin(): Observable<Signin> {
+        const params = new HttpParams({ fromString: queryString.stringify({ type: 1 }) });
+        return this.http.get(this.url + 'daily_signin', { params }).pipe(map(res => res as Signin));
     }
 }
