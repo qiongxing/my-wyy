@@ -13,7 +13,6 @@ export enum RecordType {
     allData,
     weekData
 }
-const records = ['allData', 'weekData'];
 @Injectable({
     providedIn: ServicesModule
 })
@@ -48,7 +47,7 @@ export class MemberService {
     /**获取听歌记录 */
     getUserRecord(uid: string, type = RecordType.weekData): Observable<RecordVal[]> {
         const params = new HttpParams({ fromString: queryString.stringify({ uid, type }) });
-        return this.http.get(this.url + 'user/record', { params }).pipe(map((res: UserRecord) => res[records[type]]))
+        return this.http.get(this.url + 'user/record', { params }).pipe(map((res: UserRecord) => res[RecordType[type]]))
     }
 
     /**获取用户歌单 */
@@ -57,8 +56,8 @@ export class MemberService {
         return this.http.get(this.url + 'user/playlist', { params }).pipe(map((res: { playlist: SongSheet[] }) => {
             const list = res.playlist;
             return {
-                self: list.filter(item => !item.subsribed),
-                subscribed: list.filter(item => item.subsribed),
+                self: list.filter(item => !item.subscribed),
+                subscribed: list.filter(item => item.subscribed),
             }
         }))
     }

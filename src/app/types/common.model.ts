@@ -31,7 +31,7 @@ export type SongSheet = {
     subscribedCount: number;
     shareCount: number;
     commentCount: number;
-    subsribed: boolean;
+    subscribed: boolean;
     tracks: Song[];
 }
 //歌手
