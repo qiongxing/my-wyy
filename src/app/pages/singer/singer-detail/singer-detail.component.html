@@ -53,12 +53,6 @@
                   <i class="ico share" title="分享"></i>
                 </p>
               </td>
-              <!-- <td>
-                <ng-container *ngFor="let singer of item.ar;last as isLast">
-                  <a href="">{{singer.name}}</a>
-                  <em [hidden]='isLast'>/</em>
-                </ng-container>
-              </td> -->
               <td>{{item.al.name}}</td>
             </tr>
           </tbody>
@@ -69,7 +63,13 @@
   </div>
   <div class="dt-right">
     <div class="right-wrap">
-      <h3>相似歌曲</h3>
+      <h3>相似歌手</h3>
+      <ul class="clearfix">
+        <li *ngFor="let item of simiSingers" [routerLink]="['/singer',item.id]">
+          <div class="pic"><img [src]="item.picUrl" [alt]="item.name"></div>
+          <p class="ellipsis">{{item.name}}</p>
+        </li>
+      </ul>
     </div>
   </div>
 </div>

@@ -39,7 +39,7 @@ export class SingerService {
   /**获取相似歌手 */
   getSimiSinger(id: string): Observable<Singer[]> {
     const params = new HttpParams().set('id', id);
-    return this.http.get(this.url + 'artist', { params })
+    return this.http.get(this.url + 'simi/artist', { params })
       .pipe(map((res: { artists: Singer[] }) => res.artists))
   }
 }
