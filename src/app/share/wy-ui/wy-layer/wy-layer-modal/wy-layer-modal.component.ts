@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, ViewChild, AfterViewInit, Inject, Renderer2 } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ElementRef, ChangeDetectorRef, ViewChild, AfterViewInit, Inject, Renderer2, Output, EventEmitter } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from 'src/app/store';
 import { getMember, selectModalVisible, selectModalType } from 'src/app/store/selectors/member.selector';
@@ -25,6 +25,7 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit {
   showModal = "hide";
   currentModalType = ModalTypes.Default;
   @ViewChild('modalContainer', { static: false }) private modalRef: ElementRef
+  @Output() onLoadMySheet = new EventEmitter<void>();
   private visible = false;
   private overlayRef: OverlayRef;
   private scrollStrategy: BlockScrollStrategy;
@@ -101,6 +102,9 @@ export class WyLayerModalComponent implements OnInit, AfterViewInit {
 
   private watchModalType(modalType: ModalTypes) {
     if (this.currentModalType !== modalType) {
+      if (modalType === ModalTypes.Like) {
+        this.onLoadMySheet.emit()
+      }
       this.currentModalType = modalType;
       this.cdr.markForCheck();
     }

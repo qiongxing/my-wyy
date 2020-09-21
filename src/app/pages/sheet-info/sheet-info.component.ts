@@ -9,6 +9,7 @@ import { getPlayer, selectCurrentSong } from 'src/app/store/selectors/player.sel
 import { SongService } from 'src/app/services/song.service';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 
 @Component({
   selector: 'app-sheet-info',
@@ -34,7 +35,7 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
     private store$: Store<AppStoreModule>,
     private songServe: SongService,
     private batchActionServe: BatchActionsService,
-    private nzMessageServe:NzMessageService,
+    private nzMessageServe: NzMessageService,
   ) {
     this.route.data.pipe(map(res => res.sheetInfo)).subscribe(res => {
       this.sheetInfo = res;
@@ -86,8 +87,8 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
         .subscribe(list => {
           if (list.length) {
             this.batchActionServe.insertSong(list[0], isPlay)
-          }else{
-            this.nzMessageServe.create('wraning','没有找到url！')
+          } else {
+            this.nzMessageServe.create('wraning', '没有找到url！')
           }
         })
     }
@@ -105,6 +106,10 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
       })
   }
 
+  /**收藏歌曲 */
+  onLikeSong(id: string) {
+    this.batchActionServe.controlModal(true, ModalTypes.Like)
+  }
 
   ngOnDestroy(): void {
     this.destory$.next();

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { SearchService } from './services/search.service';
-import { SearchResult } from './types/common.model';
+import { SearchResult, SongSheet } from './types/common.model';
 import { isEmptyObject } from './utils/tool';
 import { ModalTypes } from './store/reducers/member.reducer';
 import { AppStoreModule } from './store';
 import { Store } from '@ngrx/store';
-import { setModalType, setUserId } from './store/actions/member.action';
+import { setModalType, setModalVisible, setUserId } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
 import { MemberService } from './services/member.service';
@@ -25,6 +25,7 @@ export class AppComponent {
   searchResult: SearchResult;
   wyRememberLogin: LoginParams;
   user: User;
+  mySheet: SongSheet[];
   menu = [
     {
       label: '发现',
@@ -92,6 +93,17 @@ export class AppComponent {
   /**改变弹窗类型 */
   onChangeModalType(type = ModalTypes.Default) {
     this.store$.dispatch(setModalType({ modalType: type }));
+  }
+  /**获取当前用户歌单 */
+  onLoadMySheet() {
+    if (this.user) {
+      this.memberServe.getUserSheets(this.user.profile.userId.toString()).subscribe(userSheet => {
+        this.mySheet = userSheet.self;
+        this.store$.dispatch(setModalVisible({ modalVisible: true }))
+      })
+    } else {
+      this.openModal(ModalTypes.Default)
+    }
   }
   onLogin(params: LoginParams) {
     this.memberServe.login(params).subscribe(user => {
