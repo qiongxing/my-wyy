@@ -48,7 +48,6 @@ export class WySearchComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
-
   onFocus() {
     if (this.searchResult && !isEmptyObject(this.searchResult)) {
       this.showOverlayPanel();

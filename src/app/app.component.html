@@ -68,8 +68,10 @@
   </nz-layout>
 </div>
 <app-wy-player></app-wy-player>
-<app-wy-layer-modal (onLoadMySheet)="onLoadMySheet()">
+<app-wy-layer-modal [visible]="visible" [currentModalType]="currentModalType" (onLoadMySheet)="onLoadMySheet()">
   <app-wy-layer-login name="login" (onLogin)="onLogin($event)" [wyRememberLogin]="wyRememberLogin"></app-wy-layer-login>
-  <app-wy-layer-like name="like" [mySheet]="mySheet"></app-wy-layer-like>
+  <app-wy-layer-like name="like" [mySheet]="mySheet" [likeId]="likeId" [visible]="visible"
+    (onLikeSong)="onLikeSong($event)" (onCreateSheet)="onCreateSheet($event)">
+  </app-wy-layer-like>
   <app-wy-layer-default (onChangeModalType)="onChangeModalType($event)"></app-wy-layer-default>
 </app-wy-layer-modal>

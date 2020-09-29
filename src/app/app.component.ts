@@ -4,16 +4,17 @@ import { SearchResult, SongSheet } from './types/common.model';
 import { isEmptyObject } from './utils/tool';
 import { ModalTypes } from './store/reducers/member.reducer';
 import { AppStoreModule } from './store';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { setModalType, setModalVisible, setUserId } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
-import { MemberService } from './services/member.service';
+import { LikeSongParams, MemberService } from './services/member.service';
 import { User } from './services/data-types/member.type';
 import { NzMessageService } from 'ng-zorro-antd';
 import { HttpParams } from '@angular/common/http';
 import { codeJson } from './utils/base64';
 import { StorageService } from './services/storage.service';
+import { getMember, selectLikeId, selectModalType, selectModalVisible } from './store/selectors/member.selector';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,10 @@ export class AppComponent {
   wyRememberLogin: LoginParams;
   user: User;
   mySheet: SongSheet[];
+  //被监听的收藏Id
+  likeId: string;
+  currentModalType = ModalTypes.Default;
+  visible = false;
   menu = [
     {
       label: '发现',
@@ -62,6 +67,8 @@ export class AppComponent {
     if (wyRememberLogin) {
       this.wyRememberLogin = JSON.parse(wyRememberLogin);
     }
+
+    this.listenStates();
   }
   /**打开弹窗 */
   openModal(type: ModalTypes) {
@@ -139,7 +146,66 @@ export class AppComponent {
       this.alertMessage('error', error.message || "退出失败")
     })
   }
+
+  /**收藏歌曲 */
+  onLikeSong(args: LikeSongParams) {
+    this.memberServe.likeSong(args).subscribe(() => {
+      this.bactchActionsServe.controlModal(false);
+      this.alertMessage('success', '收藏成功');
+    }, error => {
+      this.alertMessage('error', error.msg || '收藏失败');
+    });
+  }
+  /**创建歌单 */
+  onCreateSheet(sheetName: string) {
+    this.memberServe.createSheet(sheetName).subscribe((pid) => {
+      this.onLikeSong({ pid, tracks: this.likeId });
+    }, error => {
+      this.alertMessage('error', error.msg || '创建失败');
+    });
+  }
+
   private alertMessage(type: string, msg: string) {
     this.messageServe.create(type, msg)
+  }
+
+  private listenStates() {
+    const appStore$ = this.store$.pipe(select(getMember));
+    const stateArr: { type: any, cb: any }[] = [
+      {
+        type: selectLikeId,
+        cb: id => this.watchListId(id)
+      },
+      {
+        type: selectModalVisible,
+        cb: visib => this.warchModalVisible(visib)
+      },
+      {
+        type: selectModalType,
+        cb: modalType => this.watchModalType(modalType)
+      }
+    ]
+    stateArr.forEach(item => {
+      appStore$.pipe(select(item.type)).subscribe(item.cb);
+    });
+  }
+
+  private watchListId(id: string) {
+    if (id) {
+      this.likeId = id;
+    }
+  }
+  private watchModalType(modalType: ModalTypes) {
+    if (this.currentModalType !== modalType) {
+      if (modalType === ModalTypes.Like) {
+        this.onLoadMySheet()
+      }
+      this.currentModalType = modalType;
+    }
+  }
+  private warchModalVisible(visib: boolean) {
+    if (this.visible !== visib) {
+      this.visible = visib;
+    }
   }
 }

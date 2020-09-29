@@ -7,3 +7,4 @@ export const getMember = createFeatureSelector<MemberState>('member');
 export const selectModalVisible = createSelector(memberState, (state) => state.modalVisible);
 export const selectModalType = createSelector(memberState, (state) => state.modalType);
 export const selectUserId = createSelector(memberState, (state) => state.userId);
+export const selectLikeId = createSelector(memberState, (state) => state.likeId);

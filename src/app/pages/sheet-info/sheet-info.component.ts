@@ -10,6 +10,7 @@ import { SongService } from 'src/app/services/song.service';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
+import { MemberService } from 'src/app/services/member.service';
 
 @Component({
   selector: 'app-sheet-info',
@@ -36,6 +37,7 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
     private songServe: SongService,
     private batchActionServe: BatchActionsService,
     private nzMessageServe: NzMessageService,
+    private memberServe: MemberService
   ) {
     this.route.data.pipe(map(res => res.sheetInfo)).subscribe(res => {
       this.sheetInfo = res;
@@ -108,9 +110,18 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
 
   /**收藏歌曲 */
   onLikeSong(id: string) {
-    this.batchActionServe.controlModal(true, ModalTypes.Like)
+    this.batchActionServe.likeSong(id);
   }
-
+  onLikeSheet(id: string) {
+    this.memberServe.likeSheet(id).subscribe(() => {
+      this.alertMessage('success', '收藏成功');
+    }, error => {
+      this.alertMessage('error', error.msg || "收藏失败");
+    })
+  }
+  private alertMessage(type: string, msg: string) {
+    this.nzMessageServe.create(type, msg);
+  }
   ngOnDestroy(): void {
     this.destory$.next();
     this.destory$.complete();
