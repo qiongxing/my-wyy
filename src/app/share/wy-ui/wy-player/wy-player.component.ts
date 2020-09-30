@@ -3,19 +3,18 @@ import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
 import { selectSongList, selectPlayList, selectCurrentIndex, selectPlayMode, selectCurrentSong, getPlayer, selectCurrentAction } from 'src/app/store/selectors/player.selector';
 import { setPlayList, setCurrentIndex, setPlayMode, setSongList, setCurrentAction } from 'src/app/store/actions/player.action';
-import { Song } from 'src/app/types/common.model';
+import { Singer, Song } from 'src/app/types/common.model';
 import { PlayMode } from './wy-player.model';
-import { TimeHolder } from 'ng-zorro-antd/time-picker/time-holder';
-import { SliderValue, NzModalService } from 'ng-zorro-antd';
-import { Subscription, fromEvent, timer } from 'rxjs';
+import { NzModalService } from 'ng-zorro-antd';
+import { timer } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { shuffle, findIndex } from 'src/app/utils/array';
 import { WyPlayerPanelComponent } from './wy-player-panel/wy-player-panel.component';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Router } from '@angular/router';
 import { trigger, style, state, transition, animate, AnimationEvent } from '@angular/animations';
 import { CurrentActions } from 'src/app/store/reducers/plaer.reducer';
+import { setShareInfo } from 'src/app/store/actions/member.action';
 
 // type: 'loop' | 'random' | 'singleLoop',
 // label: '循环' | '随机' | '单曲循环',
@@ -306,4 +305,20 @@ export class WyPlayerComponent implements OnInit {
     }
   }
 
+
+  /**收藏歌曲 */
+  onLikeSong(id: string) {
+    this.batchActionServe.likeSong(id);
+  }
+
+
+  /**分享歌单 */
+  onShareSong(resource: Song, type = "song") {
+    let txt = this.markTxt("歌曲", resource.name, (<Song>resource).ar);
+    this.store$.dispatch(setShareInfo({ info: { id: resource.id.toString(), type, txt } }));
+  }
+  private markTxt(type: string, name: string, makeBy: Singer[]): string {
+    let makeByStr = makeBy.map(item => item.name).join("/");
+    return `${type} : ${name} -- ${makeByStr}`;
+  }
 }

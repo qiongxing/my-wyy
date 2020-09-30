@@ -16,9 +16,13 @@ export class RecordsComponent implements OnInit {
   @Input() currentSong: Song = null;
   @Output() onChangeType = new EventEmitter<RecordType>();
   @Output() onAddSong = new EventEmitter<[Song, boolean]>();
+  @Output() onLikeSong = new EventEmitter<string>();
+  @Output() onShareSong = new EventEmitter<Song>();
   constructor() { }
 
   ngOnInit() {
   }
-
+  test(){
+    console.log("asdsdsd")
+  }
 }

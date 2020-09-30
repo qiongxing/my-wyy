@@ -8,9 +8,10 @@ import { User, RecordVal, UserSheet } from 'src/app/services/data-types/member.t
 import { MemberService, RecordType } from 'src/app/services/member.service';
 import { SongService } from 'src/app/services/song.service';
 import { AppStoreModule } from 'src/app/store';
+import { setShareInfo } from 'src/app/store/actions/member.action';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { getPlayer, selectCurrentSong } from 'src/app/store/selectors/player.selector';
-import { Song } from 'src/app/types/common.model';
+import { Singer, Song } from 'src/app/types/common.model';
 
 @Component({
   selector: 'app-record-detail',
@@ -31,7 +32,7 @@ export class RecordDetailComponent implements OnInit, OnDestroy {
     private memberServe: MemberService,
     private songServe: SongService,
     private nzMessageServe: NzMessageService,
-    private batchActionService: BatchActionsService,
+    private batchActionServe: BatchActionsService,
   ) {
     this.route.data.pipe(map(res => res.user)).subscribe(([user, userRecord]) => {
       this.user = user;
@@ -64,12 +65,30 @@ export class RecordDetailComponent implements OnInit, OnDestroy {
       this.songServe.getSongList(song)
         .subscribe(list => {
           if (list.length) {
-            this.batchActionService.insertSong(list[0], isPlay)
+            this.batchActionServe.insertSong(list[0], isPlay)
           } else {
             this.nzMessageServe.create('wraning', '没有找到url！')
           }
         })
     }
+  }
+
+
+  /**收藏歌曲 */
+  onLikeSong(id: string) {
+    console.log("id", id)
+    this.batchActionServe.likeSong(id);
+  }
+
+
+  /**分享歌单 */
+  onShareSong(resource: Song, type = "song") {
+    let txt = this.markTxt("歌曲", resource.name, (<Song>resource).ar);
+    this.store$.dispatch(setShareInfo({ info: { id: resource.id.toString(), type, txt } }));
+  }
+  private markTxt(type: string, name: string, makeBy: Singer[]): string {
+    let makeByStr = makeBy.map(item => item.name).join("/");
+    return `${type} : ${name} -- ${makeByStr}`;
   }
   ngOnDestroy(): void {
     this.destory$.next();

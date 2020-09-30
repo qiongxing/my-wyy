@@ -9,6 +9,9 @@
     <ng-container *ngSwitchCase="'like'">
       <ng-content select="[name=like]"></ng-content>
     </ng-container>
+    <ng-container *ngSwitchCase="'share'">
+      <ng-content select="[name=share]"></ng-content>
+    </ng-container>
     <ng-container *ngSwitchDefault>
       <ng-content></ng-content>
     </ng-container>

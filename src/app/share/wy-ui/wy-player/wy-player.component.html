@@ -1,6 +1,6 @@
-<div class="m-player" clickoutside [@showHide]="showPlayer" (onClickOutSide)='onClickOutSide($event)' [bindFlag]="bindFlag"
-  (mouseenter)='toggerPlayer("show")' (mouseleave)="toggerPlayer('hide')" (@showHide.start)="animating=true"
-  (@showHide.done)="onAnnmationDone($event)">
+<div class="m-player" clickoutside [@showHide]="showPlayer" (onClickOutSide)='onClickOutSide($event)'
+  [bindFlag]="bindFlag" (mouseenter)='toggerPlayer("show")' (mouseleave)="toggerPlayer('hide')"
+  (@showHide.start)="animating=true" (@showHide.done)="onAnnmationDone($event)">
   <div class="lock" (click)="isLocked=!isLocked">
     <div class="left">
       <i [class.locked]="isLocked"></i>
@@ -39,8 +39,8 @@
       </div>
 
       <div class="oper">
-        <i class="like" title="收藏"></i>
-        <i class="share" title="分享"></i>
+        <i class="like" title="收藏" (click)="onLikeSong(currentSong.id.toString())"></i>
+        <i class="share" title="分享" (click)="onShareSong(currentSong)"></i>
       </div>
       <div class="ctrl">
         <i class="volume" title="音量" (click)='toggleVolPanel()'></i>
@@ -55,7 +55,8 @@
       </div>
       <app-wy-player-panel [songList]='songList' [currentSong]='currentSong' [show]='showPanel'
         (onClose)='showPanel=false' (onChangeSong)='onChangeSong($event)' [playing]="playing"
-        (onDeleteSong)='onDeleteSong($event)' (onClearSong)='onClearSong($event)' (onToInfo)="toInfo($event)">
+        (onDeleteSong)='onDeleteSong($event)' (onClearSong)='onClearSong($event)' (onToInfo)="toInfo($event)"
+        (onLikeSong)="onLikeSong($event)" (onShareSong)="onShareSong($event)">
       </app-wy-player-panel>
     </div>
   </div>

@@ -9,6 +9,7 @@ import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { getPlayer, selectCurrentSong } from 'src/app/store/selectors/player.selector';
 import { Subject } from 'rxjs/internal/Subject';
+import { setShareInfo } from 'src/app/store/actions/member.action';
 
 @Component({
   selector: 'app-singer-detail',
@@ -66,6 +67,23 @@ export class SingerDetailComponent implements OnInit, OnDestroy {
         }
       })
   }
+
+  /**收藏歌曲 */
+  onLikeSong(id: string) {
+    this.batchActionServe.likeSong(id);
+  }
+
+
+  /**分享歌单 */
+  onShareSong(resource: Song, type = "song") {
+    let txt = this.markTxt("歌曲", resource.name, (<Song>resource).ar);
+    this.store$.dispatch(setShareInfo({ info: { id: resource.id.toString(), type, txt } }));
+  }
+  private markTxt(type: string, name: string, makeBy: Singer[]): string {
+    let makeByStr = makeBy.map(item => item.name).join("/");
+    return `${type} : ${name} -- ${makeByStr}`;
+  }
+
   ngOnDestroy(): void {
     this.destory$.next();
     this.destory$.complete();

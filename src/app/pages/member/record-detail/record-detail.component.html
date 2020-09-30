@@ -1,6 +1,7 @@
 <div class="record-detail wrap feature-wrap">
   <div class="page-wrap">
     <app-records [records]="record" [recordType]="recordType" [listenSongs]="user.listenSongs"
-      [currentSong]="currentSong" (onChangeType)="onChangeType($event)" (onAddSong)="onAddSong($event)"></app-records>
+      [currentSong]="currentSong" (onChangeType)="onChangeType($event)" (onAddSong)="onAddSong($event)"
+      (onLikeSong)="onLikeSong($event)" (onShareSong)="onShareSong($event)"></app-records>
   </div>
 </div>

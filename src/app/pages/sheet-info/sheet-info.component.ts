@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, takeUntil } from 'rxjs/internal/operators';
-import { SongSheet, Song } from 'src/app/types/common.model';
+import { SongSheet, Song, Singer } from 'src/app/types/common.model';
 import { Observable, Subject } from 'rxjs';
 import { AppStoreModule } from 'src/app/store';
 import { Store, select } from '@ngrx/store';
@@ -11,6 +11,7 @@ import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
 import { MemberService } from 'src/app/services/member.service';
+import { setShareInfo } from 'src/app/store/actions/member.action';
 
 @Component({
   selector: 'app-sheet-info',
@@ -118,6 +119,26 @@ export class SheetInfoComponent implements OnInit, OnDestroy {
     }, error => {
       this.alertMessage('error', error.msg || "收藏失败");
     })
+  }
+
+  /**分享歌单 */
+  shareResource(resource: Song | SongSheet, type = "song") {
+    let txt = "";
+    if (type === "playlist") {
+      txt = this.markTxt("歌单", resource.name, (<SongSheet>resource).creator.nickname);
+    } else {
+      txt = this.markTxt("歌曲", resource.name, (<Song>resource).ar);
+    }
+    this.store$.dispatch(setShareInfo({ info: { id: resource.id.toString(), type, txt } }));
+  }
+  private markTxt(type: string, name: string, makeBy: string | Singer[]): string {
+    let makeByStr = "";
+    if (Array.isArray(makeBy)) {
+      makeByStr = makeBy.map(item => item.name).join("/");
+    } else {
+      makeByStr = makeBy;
+    }
+    return `${type} : ${name} -- ${makeByStr}`;
   }
   private alertMessage(type: string, msg: string) {
     this.nzMessageServe.create(type, msg);

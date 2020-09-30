@@ -22,6 +22,8 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
   @Output() onDeleteSong = new EventEmitter<Song>();
   @Output() onClearSong = new EventEmitter<void>();
   @Output() onToInfo = new EventEmitter<[string, number]>();
+  @Output() onLikeSong = new EventEmitter<string>();
+  @Output() onShareSong = new EventEmitter<Song>();
   @ViewChildren(WyScrollComponent) private wyScroll: QueryList<WyScrollComponent>;
   private lyric: WyLyric;
   private lyricRefs: NodeList;
@@ -145,5 +147,14 @@ export class WyPlayerPanelComponent implements OnInit, OnChanges {
   toInfo(event: MouseEvent, path) {
     event.stopPropagation();
     this.onToInfo.emit(path)
+  }
+
+  likeSong(event: MouseEvent, id: string) {
+    event.stopPropagation();
+    this.onLikeSong.emit(id);
+  }
+  shareSong(event: MouseEvent, song: Song) {
+    event.stopPropagation();
+    this.onShareSong.emit(song);
   }
 }

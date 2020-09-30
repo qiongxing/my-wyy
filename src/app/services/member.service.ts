@@ -19,6 +19,11 @@ export type LikeSongParams = {
     tracks: string;
     op?: "add" | "upload";
 }
+export type ShareParams = {
+    id: string;
+    msg: string;
+    type: string;
+}
 
 @Injectable({
     providedIn: ServicesModule
@@ -84,5 +89,10 @@ export class MemberService {
         return this.http.get(this.url + 'playlist/subscribe', { params }).pipe(map((res: SampleBack) => res.code));
     }
 
+    // 分享
+    shareResource({ id, msg, type }: ShareParams): Observable<number> {
+        const params = new HttpParams({ fromString: queryString.stringify({ id, msg, type }) });
+        return this.http.get(this.url + 'share/resource', { params }).pipe(map((res: SampleBack) => res.code));
+    }
 
 }

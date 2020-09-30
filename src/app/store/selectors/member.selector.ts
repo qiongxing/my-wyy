@@ -8,3 +8,4 @@ export const selectModalVisible = createSelector(memberState, (state) => state.m
 export const selectModalType = createSelector(memberState, (state) => state.modalType);
 export const selectUserId = createSelector(memberState, (state) => state.userId);
 export const selectLikeId = createSelector(memberState, (state) => state.likeId);
+export const selectShareInfo = createSelector(memberState, (state) => state.shareInfo);

@@ -2,19 +2,19 @@ import { Component } from '@angular/core';
 import { SearchService } from './services/search.service';
 import { SearchResult, SongSheet } from './types/common.model';
 import { isEmptyObject } from './utils/tool';
-import { ModalTypes } from './store/reducers/member.reducer';
+import { ModalTypes, ShareInfo } from './store/reducers/member.reducer';
 import { AppStoreModule } from './store';
 import { select, Store } from '@ngrx/store';
 import { setModalType, setModalVisible, setUserId } from './store/actions/member.action';
 import { BatchActionsService } from './store/batch-actions.service';
 import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-login.component';
-import { LikeSongParams, MemberService } from './services/member.service';
+import { LikeSongParams, MemberService, ShareParams } from './services/member.service';
 import { User } from './services/data-types/member.type';
 import { NzMessageService } from 'ng-zorro-antd';
 import { HttpParams } from '@angular/common/http';
 import { codeJson } from './utils/base64';
 import { StorageService } from './services/storage.service';
-import { getMember, selectLikeId, selectModalType, selectModalVisible } from './store/selectors/member.selector';
+import { getMember, selectLikeId, selectModalType, selectModalVisible, selectShareInfo } from './store/selectors/member.selector';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +31,7 @@ export class AppComponent {
   likeId: string;
   currentModalType = ModalTypes.Default;
   visible = false;
+  shareInfo: ShareInfo;
   menu = [
     {
       label: '发现',
@@ -73,6 +74,9 @@ export class AppComponent {
   /**打开弹窗 */
   openModal(type: ModalTypes) {
     this.bactchActionsServe.controlModal(true, type)
+  }
+  closeModal() {
+    this.bactchActionsServe.controlModal(false);
   }
   onSearch(keyword: string) {
     if (keyword) {
@@ -118,7 +122,7 @@ export class AppComponent {
         this.alertMessage('error', user.message || "登陆失败")
       } else {
         this.user = user;
-        this.bactchActionsServe.controlModal(false);
+        this.closeModal()
         this.alertMessage('success', "登陆成功");
         this.storageServe.setStorage({ key: "wyUserId", value: user.profile.userId });
         this.store$.dispatch(setUserId({ userId: user.profile.userId.toString() }));
@@ -150,7 +154,7 @@ export class AppComponent {
   /**收藏歌曲 */
   onLikeSong(args: LikeSongParams) {
     this.memberServe.likeSong(args).subscribe(() => {
-      this.bactchActionsServe.controlModal(false);
+      this.closeModal()
       this.alertMessage('success', '收藏成功');
     }, error => {
       this.alertMessage('error', error.msg || '收藏失败');
@@ -164,6 +168,16 @@ export class AppComponent {
       this.alertMessage('error', error.msg || '创建失败');
     });
   }
+
+  onShare(info: ShareParams) {
+    this.memberServe.shareResource(info).subscribe(() => {
+      this.alertMessage('success', '分享成功');
+      this.closeModal();
+    }, error => {
+      this.alertMessage('error', error.msg || '分享失败');
+    })
+  }
+
 
   private alertMessage(type: string, msg: string) {
     this.messageServe.create(type, msg)
@@ -183,7 +197,11 @@ export class AppComponent {
       {
         type: selectModalType,
         cb: modalType => this.watchModalType(modalType)
-      }
+      },
+      {
+        type: selectShareInfo,
+        cb: info => this.watchShareInfo(info)
+      },
     ]
     stateArr.forEach(item => {
       appStore$.pipe(select(item.type)).subscribe(item.cb);
@@ -206,6 +224,13 @@ export class AppComponent {
   private warchModalVisible(visib: boolean) {
     if (this.visible !== visib) {
       this.visible = visib;
+    }
+  }
+
+  private watchShareInfo(info: ShareInfo) {
+    if (info) {
+      this.shareInfo = info;
+      this.openModal(ModalTypes.Share);
     }
   }
 }
