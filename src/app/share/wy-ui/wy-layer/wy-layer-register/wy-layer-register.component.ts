@@ -17,7 +17,7 @@ export class WyLayerRegisterComponent implements OnInit {
 
   formModel: FormGroup;
   timing: number;
-  showCode = false;
+  showCode = true;
   constructor(
     private fb: FormBuilder,
     private memberServe: MemberService,
