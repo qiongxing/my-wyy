@@ -16,6 +16,7 @@ export type LoginParams = {
 })
 export class WyLayerLoginComponent implements OnInit, OnChanges {
   @Input() wyRememberLogin: LoginParams;
+  @Input() visible = false;
   @Output() onChangeModalType = new EventEmitter<string | void>();
   @Output() onLogin = new EventEmitter<LoginParams>();
   formModel: FormGroup;
@@ -32,6 +33,9 @@ export class WyLayerLoginComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     const userLoginParames = changes["wyRememberLogin"];
+    if (changes["visible"] && !changes["visible"].firstChange) {
+      this.formModel.markAllAsTouched();
+    }
     if (userLoginParames) {
       let phone = "";
       let password = "";

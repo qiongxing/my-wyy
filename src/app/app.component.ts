@@ -229,6 +229,10 @@ export class AppComponent {
 
   private watchShareInfo(info: ShareInfo) {
     if (info) {
+      if (!this.user) {
+        this.openModal(ModalTypes.Default);
+        return;
+      }
       this.shareInfo = info;
       this.openModal(ModalTypes.Share);
     }
