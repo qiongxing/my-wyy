@@ -10,6 +10,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 import { getPlayer, selectCurrentSong } from 'src/app/store/selectors/player.selector';
 import { Subject } from 'rxjs/internal/Subject';
 import { setShareInfo } from 'src/app/store/actions/member.action';
+import { MemberService } from 'src/app/services/member.service';
 
 @Component({
   selector: 'app-singer-detail',
@@ -27,6 +28,7 @@ export class SingerDetailComponent implements OnInit, OnDestroy {
     private songServe: SongService,
     private batchActionServe: BatchActionsService,
     private nzMessageServe: NzMessageService,
+    private memberServe: MemberService,
   ) {
     this.route.data.pipe(map(res => res.singerDetail)).subscribe(([detail, simiSingers]) => {
       this.singerDetail = detail;
@@ -73,6 +75,31 @@ export class SingerDetailComponent implements OnInit, OnDestroy {
     this.batchActionServe.likeSong(id);
   }
 
+  /**批量收藏 */
+  onLikeSongs(songs: Song[]) {
+    const ids = songs.map(song => song.id).join(",");
+    this.onLikeSong(ids)
+  }
+
+  /**收藏歌手 */
+  onLikeSinger(id: string) {
+    let typeInfo = {
+      type: 1,
+      msg: "收藏"
+    };
+    if (this.singerDetail.artist.followed) {
+      typeInfo = {
+        type: 2,
+        msg: "取消收藏"
+      }
+    }
+    this.memberServe.likeSinger(id, typeInfo.type).subscribe(() => {
+      this.singerDetail.artist.followed = !this.singerDetail.artist.followed;
+      this.nzMessageServe.create('success', typeInfo.msg + "成功");
+    }, err => {
+      this.nzMessageServe.create('error', err.msg || typeInfo.msg + "失败");
+    })
+  }
 
   /**分享歌单 */
   onShareSong(resource: Song, type = "song") {

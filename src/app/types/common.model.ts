@@ -42,6 +42,7 @@ export type Singer = {
     picUrl: string;
     albumSize: number;
     alias: string[];
+    followed?: boolean;
 }
 
 export type SingerDetail = {
