@@ -1,10 +1,13 @@
 <div class="m-layer" #modalContainer [@showHide]="showModal" cdkDrag cdkDragBoundary=".cdk-overlay-container">
   <div class="zbar" cdkDragHandle>
-    <div class="zttl f-thide">标题</div>
+    <div class="zttl f-thide">{{modalTitle[currentModalType]}}</div>
   </div>
   <ng-container [ngSwitch]="currentModalType">
     <ng-container *ngSwitchCase="'loginByPhone'">
       <ng-content select="[name=login]"></ng-content>
+    </ng-container>
+    <ng-container *ngSwitchCase="'register'">
+      <ng-content select="[name=register]"></ng-content>
     </ng-container>
     <ng-container *ngSwitchCase="'like'">
       <ng-content select="[name=like]"></ng-content>

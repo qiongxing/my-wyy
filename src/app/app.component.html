@@ -23,7 +23,7 @@
                       <i nz-icon type='mobile' nzTheme='outline'></i>
                       手机登录
                     </li>
-                    <li nz-menu-item (click)="openModal('loginByPhone')">
+                    <li nz-menu-item (click)="openModal('register')">
                       <i nz-icon type='user-add' nzTheme='outline'></i>
                       注册
                     </li>
@@ -69,8 +69,11 @@
 </div>
 <app-wy-player></app-wy-player>
 <app-wy-layer-modal [visible]="visible" [currentModalType]="currentModalType" (onLoadMySheet)="onLoadMySheet()">
-  <app-wy-layer-login name="login" [visible]="visible" (onLogin)="onLogin($event)" [wyRememberLogin]="wyRememberLogin">
+  <app-wy-layer-login name="login" [visible]="visible" (onLogin)="onLogin($event)" [wyRememberLogin]="wyRememberLogin"
+    (onChangeModalType)="onChangeModalType($event)">
   </app-wy-layer-login>
+  <app-wy-layer-register name="register" [visible]="visible" (onChangeModalType)="onChangeModalType($event)">
+  </app-wy-layer-register>
   <app-wy-layer-like name="like" [mySheet]="mySheet" [likeId]="likeId" [visible]="visible"
     (onLikeSong)="onLikeSong($event)" (onCreateSheet)="onCreateSheet($event)">
   </app-wy-layer-like>

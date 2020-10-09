@@ -19,6 +19,13 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
   ])]
 })
 export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
+  modalTitle = {
+    register: "注册",
+    loginByPhone: "手机登录",
+    share: "分享",
+    like: "收藏",
+    default: "",
+  }
   showModal = "hide";
   @Input() currentModalType = ModalTypes.Default;
   @ViewChild('modalContainer', { static: false }) private modalRef: ElementRef
