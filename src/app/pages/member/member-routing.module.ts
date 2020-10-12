@@ -7,7 +7,7 @@ import { RecordResolverService } from './record-detail/record.service';
 
 
 const routes: Routes = [
-  { path: 'member/:id', component: CenterComponent, data: { title: "个人中心" }, resolve: { user: CenterResolverService } },
+  { path: '', component: CenterComponent, data: { title: "个人中心" }, resolve: { user: CenterResolverService } },
   { path: 'records/:id', component: RecordDetailComponent, data: { title: "听歌记录" }, resolve: { user: RecordResolverService } },
 ];
 
