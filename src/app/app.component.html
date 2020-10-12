@@ -72,7 +72,7 @@
   <app-wy-layer-login name="login" [visible]="visible" (onLogin)="onLogin($event)" [wyRememberLogin]="wyRememberLogin"
     (onChangeModalType)="onChangeModalType($event)">
   </app-wy-layer-login>
-  <app-wy-layer-register name="register" [visible]="visible" (onChangeModalType)="onChangeModalType($event)">
+  <app-wy-layer-register name="register" [visible]="visible" (onChangeModalType)="onChangeModalType($event)" (onRegister)="onRegister($event)">
   </app-wy-layer-register>
   <app-wy-layer-like name="like" [mySheet]="mySheet" [likeId]="likeId" [visible]="visible"
     (onLikeSong)="onLikeSong($event)" (onCreateSheet)="onCreateSheet($event)">

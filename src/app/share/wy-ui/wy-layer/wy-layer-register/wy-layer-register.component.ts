@@ -4,6 +4,12 @@ import { NzMessageService } from 'ng-zorro-antd';
 import { interval } from 'rxjs';
 import { take } from 'rxjs/internal/operators';
 import { MemberService } from 'src/app/services/member.service';
+import { ModalTypes } from 'src/app/store/reducers/member.reducer';
+
+enum Exist {
+  '存在' = 1,
+  '不存在' = -1
+}
 
 @Component({
   selector: 'app-wy-layer-register',
@@ -14,10 +20,12 @@ import { MemberService } from 'src/app/services/member.service';
 export class WyLayerRegisterComponent implements OnInit {
   @Input() visible = false;
   @Output() onChangeModalType = new EventEmitter<string | void>();
+  @Output() onRegister = new EventEmitter<string>();
 
   formModel: FormGroup;
   timing: number;
-  showCode = true;
+  showCode = false;
+  codePass = '';
   constructor(
     private fb: FormBuilder,
     private memberServe: MemberService,
@@ -38,21 +46,42 @@ export class WyLayerRegisterComponent implements OnInit {
 
   }
 
-  changeType() {
-    this.showCode = false;
-    this.formModel.reset();
-    this.onChangeModalType.emit('defult');
+  onCheckCode(code: string) {
+    this.memberServe.checkCode(this.formModel.get('phone').value, Number(code)).subscribe(() =>
+      () => this.codePass = '1',
+      () => this.codePass = '0',
+      () => this.cdr.markForCheck()
+    )
   }
 
-  private sendCode() {
+  onCheckExist() {
+    this.memberServe.checkExist(this.formModel.get('phone').value).subscribe((res) => {
+      if (Exist[res] === '存在') {
+        this.messageServe.error('已存在当前用户,可直接登录');
+        this.changeType(ModalTypes.LoginByPhone);
+      }else{
+        this.onRegister.emit(this.formModel.get('phone').value)
+      }
+    })
+  }
+
+  changeType(type = ModalTypes.Default) {
+    this.showCode = false;
+    this.formModel.reset();
+    this.onChangeModalType.emit(type);
+  }
+
+  sendCode() {
     const phone = this.formModel.get("phone").value;
     this.memberServe.sendCode(phone).subscribe(() => {
       this.timing = 60;
       if (!this.showCode) {
         this.showCode = true;
       }
-      this.cdr.markForCheck();
-      interval(1000).pipe(take(60)).subscribe(() => this.timing--);
+      interval(1000).pipe(take(60)).subscribe(() => {
+        this.timing--;
+        this.cdr.markForCheck();
+      });
     }, err => this.messageServe.error(err.message || "发送验证码失败"));
     console.log(this.formModel)
   }

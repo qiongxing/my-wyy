@@ -1,5 +1,5 @@
-<div class="code-wrap clearfix">
-  <div class="u-word" *ngFor="let item of inputArr">
+<div class="code-wrap clearfix" #cordWrap>
+  <div class="u-word" *ngFor="let item of inputArr;index as i" [class.focus]="result[i]">
     <input class="item" maxLength="1">
   </div>
 </div>
