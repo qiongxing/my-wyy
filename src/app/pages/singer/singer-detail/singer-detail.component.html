@@ -7,7 +7,7 @@
           <h3 class="ellipsis">{{singerDetail.artist.alias.join("、")}}</h3>
         </div>
         <div class="cover-img">
-          <img class="full-height" [src]="singerDetail.artist.picUrl" [alt]="singerDetail.artist.name">
+          <img appImgDefault class="full-height" [src]="singerDetail.artist.picUrl" [alt]="singerDetail.artist.name">
         </div>
         <button class="btn btn-like" [class.btn-liked]="singerDetail.artist.followed"
           (click)="onLikeSinger(singerDetail.artist.id)"></button>
@@ -67,7 +67,7 @@
       <h3>相似歌手</h3>
       <ul class="clearfix">
         <li *ngFor="let item of simiSingers" [routerLink]="['/singer',item.id]">
-          <div class="pic"><img [src]="item.picUrl" [alt]="item.name"></div>
+          <div class="pic"><img appImgDefault [src]="item.picUrl" [alt]="item.name"></div>
           <p class="ellipsis">{{item.name}}</p>
         </li>
       </ul>

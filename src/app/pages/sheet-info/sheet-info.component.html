@@ -3,7 +3,7 @@
 
     <div class="m-info clearfix">
       <div class="cover">
-        <img [src]="sheetInfo.coverImgUrl" alt="sheetInfo.name">
+        <img appImgDefault [src]="sheetInfo.coverImgUrl" alt="sheetInfo.name">
         <div class="mask"></div>
       </div>
 
@@ -19,7 +19,7 @@
 
           <div class="user f-cb">
             <a class="face" [hidden]="!sheetInfo.creator" [href]="'//music.163.com/artist?id=' + sheetInfo.userId">
-              <img [src]="sheetInfo.creator?.avatarUrl" [alt]="sheetInfo.creator?.nickname">
+              <img appImgDefault [src]="sheetInfo.creator?.avatarUrl" [alt]="sheetInfo.creator?.nickname">
             </a>
             <span class="name">
               <a [href]="'//music.163.com/artist?id=' + sheetInfo.userId"

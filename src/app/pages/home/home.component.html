@@ -3,7 +3,7 @@
     <nz-carousel nzAutoPlay nzEffect="fade" [nzDotRender]="wyCarousel.dotRef" (nzBeforeChange)="onBeforeChange($event)">
       <div class="carousel-item" nz-carousel-content *ngFor="let item of banners">
         <a [href]='item.url' target='_blank' class="banner-item">
-          <img [src]="item.imageUrl" alt="">
+          <img appImgDefault [src]="item.imageUrl" alt="">
         </a>
       </div>
     </nz-carousel>
@@ -41,7 +41,7 @@
           <div class="tit"><b>入驻歌手</b></div>
           <div class="list">
             <div class="card" *ngFor="let item of singers" [routerLink]='["/singer",item.id]'>
-              <div class="pic"><img [src]="item.picUrl" [alt]="item.name"></div>
+              <div class="pic"><img appImgDefault [src]="item.picUrl" [alt]="item.name"></div>
               <div class="txt">
                 <b class="ellipsis">{{item.name}}</b>
                 <span>专辑数:{{item.albumSize}}</span>

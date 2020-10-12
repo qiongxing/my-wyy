@@ -7,7 +7,7 @@ import { Component, OnInit, ChangeDetectionStrategy, EventEmitter, Output } from
       <div class="select-log">
         <div class="mid-wrap">
           <div class="pic">
-            <img src="../../../../../assets/images/platform.png" />
+            <img appImgDefault src="../../../../../assets/images/platform.png" />
           </div>
           <div class="methods">
             <button nz-button nzType="primary" nzSize="large" nzBlock (click)="onChangeModalType.emit('loginByPhone')">手机号登陆</button>

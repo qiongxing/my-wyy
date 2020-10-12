@@ -15,7 +15,7 @@
         <i class="next" (click)="onNext(currentIndex+1)"></i>
       </div>
       <div class="head">
-        <img [src]="picUrl" alt="">
+        <img appImgDefault [src]="picUrl" alt="">
         <i class="mask" (click)="toInfo(['/songInfo',currentSong?.id])"></i>
       </div>
       <div class="play">
