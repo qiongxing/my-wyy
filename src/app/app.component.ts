@@ -11,10 +11,13 @@ import { LoginParams } from './share/wy-ui/wy-layer/wy-layer-login/wy-layer-logi
 import { LikeSongParams, MemberService, ShareParams } from './services/member.service';
 import { User } from './services/data-types/member.type';
 import { NzMessageService } from 'ng-zorro-antd';
-import { HttpParams } from '@angular/common/http';
 import { codeJson } from './utils/base64';
 import { StorageService } from './services/storage.service';
 import { getMember, selectLikeId, selectModalType, selectModalVisible, selectShareInfo } from './store/selectors/member.selector';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter, map, mergeMap } from 'rxjs/internal/operators';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +25,7 @@ import { getMember, selectLikeId, selectModalType, selectModalVisible, selectSha
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  title = 'WyyApp';
+  routeTitle = '';
   searchResult: SearchResult;
   wyRememberLogin: LoginParams;
   user: User;
@@ -32,6 +35,8 @@ export class AppComponent {
   currentModalType = ModalTypes.Default;
   visible = false;
   shareInfo: ShareInfo;
+  //弹窗loading
+  showSpin = false;
   menu = [
     {
       label: '发现',
@@ -42,6 +47,8 @@ export class AppComponent {
       path: '/sheet'
     }
   ]
+
+  private navEnd: Observable<NavigationEnd>;
   constructor(
     private searchServe: SearchService,
     private store$: Store<AppStoreModule>,
@@ -49,6 +56,9 @@ export class AppComponent {
     private memberServe: MemberService,
     private messageServe: NzMessageService,
     private storageServe: StorageService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private titleServe: Title,
   ) {
     const userId = this.storageServe.getStorage("wyUserId");
     if (userId) {
@@ -70,6 +80,27 @@ export class AppComponent {
     }
 
     this.listenStates();
+
+    this.navEnd = <Observable<NavigationEnd>>this.router.events.pipe(filter(evt => evt instanceof NavigationEnd));
+
+    this.setTitle();
+  }
+
+  private setTitle() {
+    this.navEnd.pipe(
+      //转换类型
+      map(() => this.activatedRoute),
+      map((route: ActivatedRoute) => {
+        while (route.firstChild) {
+          route = route.firstChild;
+        }
+        return route;
+      }),
+      mergeMap(route => route.data),
+    ).subscribe(data => {
+      this.routeTitle = data['title'];
+      this.titleServe.setTitle(this.routeTitle);
+    })
   }
   /**打开弹窗 */
   openModal(type: ModalTypes) {
@@ -117,7 +148,9 @@ export class AppComponent {
     }
   }
   onLogin(params: LoginParams) {
+    this.showSpin = true;
     this.memberServe.login(params).subscribe(user => {
+      this.showSpin = false;
       if (user.code !== 200) {
         this.alertMessage('error', user.message || "登陆失败")
       } else {
@@ -133,6 +166,7 @@ export class AppComponent {
         }
       }
     }, error => {
+      this.showSpin = false;
       this.alertMessage('error', error.message || "登陆失败")
     })
   }
@@ -180,6 +214,7 @@ export class AppComponent {
 
   //注册
   onRegister(phone: string) {
+    //TODO:未调用接口，测试用
     this.alertMessage('success', phone + '注册成功');
   }
 

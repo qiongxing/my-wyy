@@ -5,7 +5,8 @@
         <div class="left">
           <h1>Music</h1>
           <ul nz-menu nzTheme='dark' nzMode='horizontal'>
-            <li nz-menu-item *ngFor="let item of menu" [routerLink]='item.path'>{{item.label}}</li>
+            <li nz-menu-item *ngFor="let item of menu" [nzSelected]="routeTitle===item.label" [routerLink]='item.path'>
+              {{item.label}}</li>
           </ul>
         </div>
         <div class="right">
@@ -68,11 +69,13 @@
   </nz-layout>
 </div>
 <app-wy-player></app-wy-player>
-<app-wy-layer-modal [visible]="visible" [currentModalType]="currentModalType" (onLoadMySheet)="onLoadMySheet()">
+<app-wy-layer-modal [visible]="visible" [currentModalType]="currentModalType" [showSpin]="showSpin"
+  (onLoadMySheet)="onLoadMySheet()">
   <app-wy-layer-login name="login" [visible]="visible" (onLogin)="onLogin($event)" [wyRememberLogin]="wyRememberLogin"
     (onChangeModalType)="onChangeModalType($event)">
   </app-wy-layer-login>
-  <app-wy-layer-register name="register" [visible]="visible" (onChangeModalType)="onChangeModalType($event)" (onRegister)="onRegister($event)">
+  <app-wy-layer-register name="register" [visible]="visible" (onChangeModalType)="onChangeModalType($event)"
+    (onRegister)="onRegister($event)">
   </app-wy-layer-register>
   <app-wy-layer-like name="like" [mySheet]="mySheet" [likeId]="likeId" [visible]="visible"
     (onLikeSong)="onLikeSong($event)" (onCreateSheet)="onCreateSheet($event)">

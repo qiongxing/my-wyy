@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, EventEmitter, Output, ChangeDetectorRef, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd';
 import { interval } from 'rxjs';
@@ -17,7 +17,7 @@ enum Exist {
   styleUrls: ['./wy-layer-register.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WyLayerRegisterComponent implements OnInit {
+export class WyLayerRegisterComponent implements OnInit, OnChanges {
   @Input() visible = false;
   @Output() onChangeModalType = new EventEmitter<string | void>();
   @Output() onRegister = new EventEmitter<string>();
@@ -41,6 +41,17 @@ export class WyLayerRegisterComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['visible'] && !changes['visible'].firstChange) {
+      this.formModel.markAllAsTouched();
+      if (!this.visible) {
+        this.showCode = false;
+        this.codePass = '';
+        this.cdr.markForCheck();
+      }
+    }
+  }
+
   onSubmit() {
     this.sendCode();
 
@@ -59,7 +70,7 @@ export class WyLayerRegisterComponent implements OnInit {
       if (Exist[res] === '存在') {
         this.messageServe.error('已存在当前用户,可直接登录');
         this.changeType(ModalTypes.LoginByPhone);
-      }else{
+      } else {
         this.onRegister.emit(this.formModel.get('phone').value)
       }
     })
