@@ -1,3 +1,3 @@
-export function isEmptyObject(obj: Object) {
+export function isEmptyObject(obj: object) {
     return JSON.stringify(obj) === '{}'
 }
