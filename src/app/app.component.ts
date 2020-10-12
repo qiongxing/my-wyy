@@ -14,9 +14,9 @@ import { NzMessageService } from 'ng-zorro-antd';
 import { codeJson } from './utils/base64';
 import { StorageService } from './services/storage.service';
 import { getMember, selectLikeId, selectModalType, selectModalVisible, selectShareInfo } from './store/selectors/member.selector';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { filter, map, mergeMap } from 'rxjs/internal/operators';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { interval, Observable } from 'rxjs';
+import { filter, map, mergeMap, takeUntil } from 'rxjs/internal/operators';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -47,6 +47,9 @@ export class AppComponent {
       path: '/sheet'
     }
   ]
+
+  /**加载读条 */
+  loadPrecent = 0;
 
   private navEnd: Observable<NavigationEnd>;
   constructor(
@@ -81,11 +84,22 @@ export class AppComponent {
 
     this.listenStates();
 
+    this.router.events.pipe(filter(evt => evt instanceof NavigationStart)).subscribe(() => {
+      this.loadPrecent = 0;
+      this.setTitle();
+    });
     this.navEnd = <Observable<NavigationEnd>>this.router.events.pipe(filter(evt => evt instanceof NavigationEnd));
-
-    this.setTitle();
+    this.setLoadingBar();
   }
 
+  private setLoadingBar() {
+    interval(100).pipe(takeUntil(this.navEnd)).subscribe(() => {
+      this.loadPrecent = Math.max(95, ++this.loadPrecent)
+    });
+    this.navEnd.subscribe(() => {
+      this.loadPrecent = 100;
+    })
+  }
   private setTitle() {
     this.navEnd.pipe(
       //转换类型

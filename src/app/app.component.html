@@ -1,4 +1,6 @@
 <div id="app">
+  <nz-progress *ngIf="loadPrecent<100" nzStrokeWidth="5" [nzShowInfo]="false" nzStatus="active"
+    [nzPercent]="loadPrecent"></nz-progress>
   <nz-layout class="layout">
     <nz-header class="header">
       <div class="wrap">
