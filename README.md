@@ -10,11 +10,27 @@
 
 ## 前端
 
+### 使用技术
+
+- UI框架：`NG-ZORRO`
+- CSS技术：`Less`
+- 状态管理：`ngrx/store`
+
+### 项目启动
+
 ``` json
  "start": "ng serve --port 4201",//项目启动
  "build": "ng build --prod --optimization --progress --extractCss",//项目构建
  "serve": "node serve.js" //服务启动
 ```
+
+### 目前已知未完成功能
+
+- [ ] 调用注册接口完成注册(目前只是给出提示)
+
+### 目前存在的Bug
+
+- [ ] 获取歌曲详情只有10条数据
 
 ## 最后
 
