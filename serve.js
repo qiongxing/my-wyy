@@ -11,13 +11,13 @@ const apiProxy = createProxyMiddleware('/**', {
   changeOrigin: true,
 });
 /**路径以 /api开头配置 */
-const apiProxy = createProxyMiddleware('/api/**', {
-  target: "http://localhost:3000",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/api": ""
-  }
-});
+// const apiProxy = createProxyMiddleware('/api/**', {
+//   target: "http://localhost:3000",
+//   changeOrigin: true,
+//   pathRewrite: {
+//     "^/api": ""
+//   }
+// });
 app.use(apiProxy);
 app.listen(PORT, function (err) {
   if (err) {
