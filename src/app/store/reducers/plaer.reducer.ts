@@ -1,6 +1,6 @@
 import { PlayMode } from 'src/app/share/wy-ui/wy-player/wy-player.model';
 import { Song } from 'src/app/types/common.model';
-import { createReducer, on } from '@ngrx/store';
+import { Action, createReducer, on } from '@ngrx/store';
 import { setPlaying, setPlayMode, setSongList, setPlayList, setCurrentIndex, setCurrentAction } from '../actions/player.action';
 
 export enum CurrentActions {
@@ -35,7 +35,8 @@ const initPlayerState: PlayerState = {
     currentAction: CurrentActions.Other
 }
 
-export const playerReducer = createReducer(initPlayerState,
+const reducer = createReducer(
+    initPlayerState,
     on(setPlaying, (state, { playing }) => ({ ...state, playing })),
     on(setPlayMode, (state, { playMode }) => ({ ...state, playMode })),
     on(setSongList, (state, { songList }) => ({ ...state, songList })),
@@ -43,3 +44,7 @@ export const playerReducer = createReducer(initPlayerState,
     on(setCurrentIndex, (state, { currentIndex }) => ({ ...state, currentIndex })),
     on(setCurrentAction, (state, { currentAction }) => ({ ...state, currentAction })),
 )
+
+export function playerReducer(state: PlayerState, action: Action) {
+    return reducer(state, action);
+}

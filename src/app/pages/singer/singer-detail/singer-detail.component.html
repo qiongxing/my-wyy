@@ -10,7 +10,7 @@
           <img appImgDefault class="full-height" [src]="singerDetail.artist.picUrl" [alt]="singerDetail.artist.name">
         </div>
         <button class="btn btn-like" [class.btn-liked]="singerDetail.artist.followed"
-          (click)="onLikeSinger(singerDetail.artist.id)"></button>
+          (click)="onLikeSinger(singerDetail.artist.id.toString())"></button>
       </div>
       <div class="top-50">
         <div class="btns clearfix">

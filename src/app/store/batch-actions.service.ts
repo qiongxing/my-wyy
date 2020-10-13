@@ -44,8 +44,8 @@ export class BatchActionsService {
 
   /**添加歌曲 */
   insertSong(song: Song, isPlay = false) {
-    const songList = this.playState.songList.slice();
-    const playList = this.playState.playList.slice();
+    let songList = this.playState.songList.slice();
+    let playList = this.playState.playList.slice();
     let insertIndex = this.playState.currentIndex;
     const pIndex = findIndex(playList, song);
     if (pIndex > -1) {
@@ -55,9 +55,13 @@ export class BatchActionsService {
       }
     } else {
       songList.push(song);
-      playList.push(song);
       if (isPlay) {
         insertIndex = songList.length - 1;
+      }
+      if (this.playState.playMode.type === "random") {
+        playList = shuffle(songList);
+      } else {
+        playList.push(song);
       }
       this.store$.dispatch(setSongList({ songList }));
       this.store$.dispatch(setPlayList({ playList }));
@@ -69,18 +73,21 @@ export class BatchActionsService {
       this.store$.dispatch(setCurrentAction({ currentAction: CurrentActions.Add }));
     }
   }
+  /**添加多首歌曲let */
   insertSongs(songs: Song[]) {
-    const songList = this.playState.songList.slice();
-    const playList = this.playState.playList.slice();
-    songs.forEach(song => {
-      const pIndex = findIndex(playList, song);
-      if (pIndex === -1) {
-        playList.push(song);
-        songList.push(song);
+    let songList = this.playState.songList.slice();
+    let playList = this.playState.playList.slice();
+    const validSongs = songs.filter(item => findIndex(playList, item) === -1);
+    if (validSongs.length) {
+      songList = songList.concat(validSongs);
+      let songPlayList = songList.slice();
+      if (this.playState.playMode.type === "random") {
+        songPlayList = shuffle(songList);
       }
-    })
-    this.store$.dispatch(setSongList({ songList }));
-    this.store$.dispatch(setPlayList({ playList }));
+      playList = playList.concat(songPlayList);
+      this.store$.dispatch(setSongList({ songList }));
+      this.store$.dispatch(setPlayList({ playList }));
+    }
     this.store$.dispatch(setCurrentAction({ currentAction: CurrentActions.Add }));
   }
   /**删除歌曲 */

@@ -116,6 +116,14 @@ export class AppComponent {
       this.titleServe.setTitle(this.routeTitle);
     })
   }
+
+  openModalByMenu(type: string) {
+    if (type === ModalTypes.LoginByPhone) {
+      this.openModal(ModalTypes.LoginByPhone);
+    } else {
+      this.openModal(ModalTypes.Register);
+    }
+  }
   /**打开弹窗 */
   openModal(type: ModalTypes) {
     this.bactchActionsServe.controlModal(true, type)
