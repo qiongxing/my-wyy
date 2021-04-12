@@ -12,11 +12,13 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
   templateUrl: './wy-layer-modal.component.html',
   styleUrls: ['./wy-layer-modal.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [trigger('showHide', [
-    state('show', style({ transform: 'scale(1)', opacity: '1' })),
-    state('hide', style({ transform: 'scale(0)', opacity: '0' })),
-    transition('show<=>hide', animate('0.1s'))
-  ])]
+  animations: [
+    trigger('showHide', [
+      state('show', style({ transform: 'scale(1)', opacity: '1' })),
+      state('hide', style({ transform: 'scale(0)', opacity: '0' })),
+      transition('show<=>hide', animate('0.1s'))
+    ])
+  ]
 })
 export class WyLayerModalComponent implements OnInit, AfterViewInit, OnChanges {
   modalTitle = {

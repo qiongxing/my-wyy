@@ -16,7 +16,7 @@ import { StorageService } from './services/storage.service';
 import { getMember, selectLikeId, selectModalType, selectModalVisible, selectShareInfo } from './store/selectors/member.selector';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { interval, Observable } from 'rxjs';
-import { filter, map, mergeMap, takeUntil } from 'rxjs/internal/operators';
+import { filter, map, mergeMap, take, takeUntil } from 'rxjs/internal/operators';
 import { Title } from '@angular/platform-browser';
 
 @Component({

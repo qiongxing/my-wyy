@@ -12,7 +12,7 @@ export const WINDOW = new InjectionToken('WindowToken')
     CommonModule
   ],
   providers: [
-    { provide: API_CONFIG, useValue: environment.production ? '/' : '/api/' },
+    { provide: API_CONFIG, useValue: '/api/' },
     {
       provide: WINDOW,
       useFactory: (platformId): Window | Object => {
