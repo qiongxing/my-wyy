@@ -1,20 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HomeService } from 'src/app/services/home.service';
 import { Banner, HotTag, SongSheet, Singer } from 'src/app/types/common.model';
 import { NzCarouselComponent } from 'ng-zorro-antd';
-import { SingerService } from 'src/app/services/singer.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs/internal/operators';
 import { SheetService } from 'src/app/services/sheet.service';
 import { Store, select } from '@ngrx/store';
 import { AppStoreModule } from 'src/app/store';
-import { setPlayList, setSongList, setCurrentIndex } from 'src/app/store/actions/player.action';
-import { PlayerState } from 'src/app/store/reducers/plaer.reducer';
-import { getPlayer } from 'src/app/store/selectors/player.selector';
-import { shuffle, findIndex } from 'src/app/utils/array';
 import { BatchActionsService } from 'src/app/store/batch-actions.service';
 import { ModalTypes } from 'src/app/store/reducers/member.reducer';
-import { getMember, selectModalVisible, selectUserId } from 'src/app/store/selectors/member.selector';
+import { getMember, selectUserId } from 'src/app/store/selectors/member.selector';
 import { MemberService } from 'src/app/services/member.service';
 import { User } from 'src/app/services/data-types/member.type';
 

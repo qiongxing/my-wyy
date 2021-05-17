@@ -2,6 +2,7 @@ import { SingerService } from "./singer.service"
 import { API_CONFIG } from './services.module';
 import { defer, Observable, of } from 'rxjs';
 import { resolve } from 'url';
+import { Singer } from "../types/common.model";
 let httpClientSpy: { get: jasmine.Spy };
 let service: SingerService;
 fdescribe('Test SingerService', () => {
@@ -15,17 +16,18 @@ fdescribe('Test SingerService', () => {
         return defer(() => Promise.resolve(data));
     }
     it('http服务被正常调用', () => {
-        const res = [{
-            id: '001',
+        const res: Singer[] = [{
+            id: 1,
             name: '001',
             picUrl: '001',
-            albumSize: '001',
+            albumSize: 12,
+            alias: []
         }];
         httpClientSpy.get.and.returnValue(of(res));
 
-        service.getEnterSinger().subscribe(res => {
-            expect(res.length).toEqual(1, '数据长度===1');
-            expect(res).toEqual(res), fail;
+        service.getEnterSinger().subscribe(result => {
+            expect(result.length).toEqual(1, '数据长度===1');
+            expect(result).toBe(res), fail;
         })
         expect(httpClientSpy.get.calls.count()).toBe(1, '被调用1次');
     })

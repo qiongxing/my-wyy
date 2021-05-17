@@ -16,7 +16,7 @@ export class HomeResolverService implements Resolve<HomeDataType> {
             this.homeSer.getBanners(),
             this.homeSer.getHotTags(),
             this.homeSer.getPerosonalSheetList(),
-            this.singerService.getEnterSinger(),
+            this.singerService.getEnterSinger()
         ]).pipe(first());
     }
 }

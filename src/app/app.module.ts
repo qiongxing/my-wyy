@@ -20,7 +20,7 @@ registerLocaleData(zh);
   imports: [
     CoreModule
   ],
- 
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

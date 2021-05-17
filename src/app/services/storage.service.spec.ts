@@ -1,12 +1,22 @@
 import { TestBed } from '@angular/core/testing';
+import { AnyJson } from '../types/common.model';
+import { WINDOW } from './services.module';
 
 import { StorageService } from './storage.service';
 
-describe('StorageService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: StorageService = TestBed.get(StorageService);
-    expect(service).toBeTruthy();
-  });
+
+fdescribe('StorageService', () => {
+  let service: StorageService;
+  beforeEach(() => {
+    service = new StorageService(window)
+  }
+  );
+
+  it('should set localStroge', () => {
+    let params: AnyJson = { key: "key", value: "value" };
+    service.setStorage(params);
+    let result = window.localStorage.getItem("key");
+    expect("value").toEqual(result);
+  })
 });
