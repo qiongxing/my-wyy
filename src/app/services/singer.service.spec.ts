@@ -16,18 +16,20 @@ fdescribe('Test SingerService', () => {
         return defer(() => Promise.resolve(data));
     }
     it('http服务被正常调用', () => {
-        const res: Singer[] = [{
-            id: 1,
-            name: '001',
-            picUrl: '001',
-            albumSize: 12,
-            alias: []
-        }];
+        const res: any = {
+            artists: [{
+                id: 1,
+                name: '001',
+                picUrl: '001',
+                albumSize: 12,
+                alias: ['JJ Lin']
+            }]
+        };
         httpClientSpy.get.and.returnValue(of(res));
 
         service.getEnterSinger().subscribe(result => {
             expect(result.length).toEqual(1, '数据长度===1');
-            expect(result).toBe(res), fail;
+            expect(result).toBe(res.artists), fail;
         })
         expect(httpClientSpy.get.calls.count()).toBe(1, '被调用1次');
     })
